@@ -1,0 +1,12 @@
+# One environment for all seven assignments.
+#   conda env create -f environment.yml
+#   conda activate cs221
+#   python -m ipykernel install --user --name cs221 --display-name "Python 3.12 (cs221)"
+name: cs221
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - -r requirements.txt

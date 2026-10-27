@@ -1,0 +1,104 @@
+% ============================================================================
+\section{From Language to Logic}
+\label{sec:logic}
+% Source: assignments/07_logic/index.html
+% ============================================================================
+
+Problems 1--5 are programming problems (formulas written with \texttt{logic.py}). We list the formulas in
+mathematical notation so the report can be read on its own; the code and grader output are in the notebook.
+
+% ----------------------------------------------------------------------------
+\subsection{Propositional logic}
+\codepart{7.1}
+\begin{enumerate}[label=(1\alph*)]
+  \item ``If it's summer and we're in California, then it doesn't rain.'' \quad \todo{formula}
+  \item ``It's wet if and only if it is raining or the sprinklers are on.'' \quad \todo{formula}
+  \item ``Either it's day or night (but not both).'' \quad \todo{formula}
+\end{enumerate}
+
+% ----------------------------------------------------------------------------
+\subsection{First-order logic}
+\codepart{7.2}
+\begin{enumerate}[label=(2\alph*)]
+  \item ``Every person has a parent.'' \quad \todo{formula}
+  \item ``At least one person has no children.'' \quad \todo{formula}
+  \item Define $\text{Father}(x,y)$ in terms of $\text{Male}$ and $\text{Parent}$. \quad \todo{formula}
+  \item Define $\text{Granddaughter}(x,y)$ in terms of $\text{Female}$ and $\text{Child}$. \quad \todo{formula}
+\end{enumerate}
+
+% ----------------------------------------------------------------------------
+\subsection{Liar puzzle}
+\codepart{7.3a}
+Suspects: John, Susan, Mark, Nicole. Mark: ``It wasn't me!'' John: ``It was Nicole!'' Nicole: ``It wasn't me, it
+was Susan!'' Susan: ``Nicole's a liar.'' Exactly one person tells the truth, and exactly one person crashed the server.
+
+\todo{the six formulas and the answer returned by \texttt{grader.py 3a-run}}
+
+% ----------------------------------------------------------------------------
+\subsection{Odd and even integers}
+\codepart{7.4a}
+\todo{the six axioms in mathematical notation and the result of \texttt{grader.py 4a-run}}
+
+% ----------------------------------------------------------------------------
+\subsection{Semantic parsing (extra credit)}
+\codepart{7.5}
+Grammar rules for: \emph{every \$Noun \$Verb some \$Noun}; \emph{there is some \$Noun that every \$Noun \$Verb};
+\emph{if a \$Noun \$Verb a \$Noun then the former \$Verb the latter}.
+
+% ----------------------------------------------------------------------------
+\subsection{Explainability of logic-based systems}
+
+The four considerations: \emph{respect}; \emph{assessing the fairness of rules}; \emph{contesting and correcting
+decisions}; \emph{ability to change user behaviour}. Context: the liar puzzle of Problem~3, where a conclusion could
+have real consequences (e.g.\ someone being fired).
+
+\problempart{6a}{What counts as an explanation}
+\question{Besides the final answer, what does a general first-order logic system, like the one used in Problem 3,
+return that could count as an explanation?}
+\expect{1--2 sentences.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{6b}{Why it may not be adequate}
+\question{Why might this explanation not be adequate? (Hint: model misspecification, or how the question is framed.)}
+\expect{1--2 sentences.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{6c}{Which considerations are met}
+\question{Are any of the four explainability considerations met by the explanations a logic-based system produces?}
+\expect{2--4 sentences.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Applications of soundness and completeness}
+
+Sound: $\{f: KB\vdash f\}\subseteq\{f: KB\vDash f\}$. \quad Complete: $\{f: KB\vdash f\}\supseteq\{f: KB\vDash f\}$.
+
+\problempart{7a}{Is an LLM sound or complete?}
+\question{Treat whatever GPT-3.5 generates as what it ``derives''. Given that LLMs hallucinate, is GPT-3.5 sound,
+complete, both or neither? Use examples and the definitions.}
+\expect{2--3 sentences for each property (4--6 in total).}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{7b}{Safety-critical deployment}
+\question{System A is sound but not complete, and System B is complete but not sound. Which would you deploy in a
+safety-critical setting, where acting on a false conclusion has severe consequences, and why?}
+\expect{2--3 sentences tied to the definitions.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{7c}{With a separate verifier}
+\question{With a separate verifier available (e.g.\ a human in the loop) and the goal of capturing as much true
+information as possible, which system would you choose, and why?}
+\expect{2--3 sentences tied to the definitions.}
+\begin{solution}
+\todo{answer}
+\end{solution}

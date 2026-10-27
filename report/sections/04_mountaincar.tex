@@ -1,0 +1,124 @@
+% ============================================================================
+\section{Controlling MountainCar}
+\label{sec:mountaincar}
+% Source: assignments/04_mountaincar/index.html
+% ============================================================================
+
+% ----------------------------------------------------------------------------
+\subsection{Value iteration}
+
+$\text{States}=\{-2,-1,0,+1,+2\}$, start state $0$, end states $\pm2$, $\text{Actions}=\{a_1,a_2\}$, $\gamma=1$.
+For $i\in\{-1,0,1\}$: $T(i-1\mid i,a_1)=0.8$, $T(i+1\mid i,a_1)=0.2$; $T(i-1\mid i,a_2)=0.7$, $T(i+1\mid i,a_2)=0.3$.
+$\text{Reward}(s,a,s')=10$ if $s'=-2$; $50$ if $s'=+2$; $-5$ otherwise.
+
+\problempart{1a}{Two iterations}
+\question{Give $V^\star_i(s)$ for every $s$ after iterations $i=1,2$ (with $V^\star_0\equiv0$, and $V^\star_i=0$ at end states).}
+\expect{All 10 values.}
+\begin{solution}
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+ & $s=-2$ & $s=-1$ & $s=0$ & $s=+1$ & $s=+2$\\
+\midrule
+$V^\star_1$ & \todo{} & \todo{} & \todo{} & \todo{} & \todo{}\\
+$V^\star_2$ & \todo{} & \todo{} & \todo{} & \todo{} & \todo{}\\
+\bottomrule
+\end{tabular}
+\end{center}
+\todo{show the Q-value computations}
+\end{solution}
+
+\problempart{1b}{Optimal policy}
+\question{Using $V^\star_2$, what is $\pi^\star(s)$ for each non-end state?}
+\expect{$\pi^\star(s)$ for $s\in\{-1,0,+1\}$.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Transforming MDPs}
+
+\problempart{2a}{Removing the discount}
+\question{Given an MDP with discount $\gamma<1$ and a solver that only handles $\gamma'=1$, define a new MDP with
+$\text{States}'=\text{States}\cup\{o\}$, the same actions, and $\gamma'=1$. Specify $T'(s'\mid s,a)$ and
+$\text{Reward}'(s,a,s')$ so that $V_{\text{opt}}(s)$ is unchanged for every $s\in\text{States}$.}
+\expect{$T'$ and $\text{Reward}'$ as formulas, followed by a short verification that the optimal-value
+recurrences coincide. Use the notation of the question.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Value iteration on Mountain Car}
+\codepart{4.3a--4.3b}
+\texttt{value\_iteration} and \texttt{ModelBasedMonteCarlo}.
+
+\problempart{3c}{Model-based value iteration: results}
+\question{Run \texttt{python train.py --agent value-iteration} (three trials). Comment on the reward plots, and
+discuss when model-based value iteration can perform poorly in general.}
+\expect{The plots, plus 2--3 sentences describing them and when the method may fail.}
+\begin{solution}
+\todo{include figures/04\_mountaincar/mcvi\_*.png and discuss}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Q-learning Mountain Car}
+\codepart{4.4a--4.4c}
+\texttt{TabularQLearning}, \texttt{fourier\_feature\_extractor}, \texttt{FunctionApproxQLearning}.
+
+\problempart{4d}{Tabular vs.\ function approximation}
+\question{Run \texttt{train.py --agent tabular} and \texttt{--agent function-approximation}. Compare the plots.
+Tabular Q-learning is expected to do better on this task. Why might that be?}
+\expect{The plots, plus 2--3 sentences comparing the two and giving possible reasons.}
+\begin{solution}
+\todo{include figures/04\_mountaincar/tabular\_*.png, fapprox\_*.png and discuss}
+\end{solution}
+
+\problempart{4e}{When function approximation wins}
+\question{Why could function-approximation Q-learning beat tabular Q-learning in other environments, e.g.\ with
+limited exploration, very high-dimensional state spaces, or tight memory?}
+\expect{2--3 sentences.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Safe exploration}
+
+\problempart{5a}{\texttt{max\_speed} in Gym}
+\question{Explain how \texttt{self.max\_speed} is used in Gym's \texttt{mountain\_car.py}.}
+\expect{One sentence.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{5b}{Removing the constraint}
+\question{Run \texttt{train.py --agent function-approximation --max\_speed=100000}. Why does the behaviour of the
+learned policy barely change compared with $\texttt{max\_speed}=0.07$?}
+\expect{1--2 sentences.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{5c}{Constrained Q-learning}
+\question{After implementing \texttt{ConstrainedQLearning}, so that only actions with
+$\text{velocity}_{t+1}<\text{threshold}$ are allowed, with
+$\text{velocity}_{t+1}=\text{velocity}_t+(\text{action}-1)\cdot\text{force}-\cos(3\,\text{position}_t)\cdot\text{gravity}$,
+run \texttt{grader.py 5c-helper}. Why do the policies for $\texttt{max\_speed}=0.065$ and an unconstrained
+\texttt{max\_speed} differ?}
+\expect{1--2 sentences (only the written answer is graded). Code: notebook \S4.5c.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{5d}{Designing safe MDPs for autonomous driving}
+\question{An autonomous car is trained with RL on public residential roads (pedestrians, vehicles, traffic signals;
+camera sensing). Design \textbf{MDP A} with an exploration policy that could cause harm, and \textbf{MDP B}, a
+modification that reduces or avoids that harm.}
+\expect{For each MDP: $\text{States}$, $\text{Actions}(s)$, $\text{Reward}(s,a,s')$, an exploration policy, and
+a 1--2 sentence ethical explanation.}
+\begin{solution}
+\textbf{MDP A.} \todo{States / Actions(s) / Reward(s,a,s') / exploration policy / harm}
+
+\textbf{MDP B.} \todo{States / Actions(s) / Reward(s,a,s') / exploration policy / mitigation}
+\end{solution}

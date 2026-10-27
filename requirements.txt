@@ -1,0 +1,24 @@
+# Python 3.12 is what the CS221 graders expect (they warn on any other version).
+
+# --- notebook tooling ---
+jupyterlab
+ipykernel
+nbformat
+
+# --- 01 Foundations / 02 Sentiment: standard library only (numpy only used by the grader) ---
+numpy==1.26.4            # 04 MountainCar pins numpy 1.26.x; 1.26.4 has py3.12 wheels
+
+# --- 03 Route ---
+osmium                   # OpenStreetMap parsing (see assignments/03_route/README.md if it fails to build)
+plotly                   # visualization.py
+pandas                   # required by plotly express
+
+# --- 04 MountainCar (pins copied from assignments/04_mountaincar/requirements.txt) ---
+gym==0.26.2
+gym-notices==0.0.8
+gymnasium==0.28.1
+pygame==2.5.2
+matplotlib
+keyboard==0.13.5
+
+# --- 05 Pac-Man / 06 Bayesian (car tracking) / 07 Logic: standard library + tkinter only ---

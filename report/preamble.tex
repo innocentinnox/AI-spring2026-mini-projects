@@ -1,0 +1,101 @@
+% ============================================================================
+%  Shared preamble for the combined CS221 mini-project report.
+%  Union of the macros used by the seven official CS221 templates (see
+%  report/templates/), adapted so the whole report compiles with plain
+%  pdflatex/latexmk: no minted, so no -shell-escape is needed.
+% ============================================================================
+
+% ---- page & fonts -----------------------------------------------------------
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+\setlength{\headheight}{14pt}
+
+% ---- maths ------------------------------------------------------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs,bm}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\sign}{sign}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+\newcommand{\indic}[1]{\mathbf{1}[#1]}
+% sentiment (Assignment 2, Problem 4)
+\newcommand{\TrainLossNew}{\text{TrainLoss}_{\text{new}}}
+\newcommand{\TrainLossAvg}{\text{TrainLoss}_{\text{avg}}}
+\newcommand{\TrainLossMax}{\text{TrainLoss}_{\max}}
+\newcommand{\TrainLossG}{\text{TrainLoss}_g}
+
+\theoremstyle{definition}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{claim}{Claim}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+
+% ---- tables, figures, diagrams ---------------------------------------------
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs,tabularx,multirow,array}
+\usepackage{float}
+\usepackage{caption,subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes,fit,calc}
+% Bayesian-network node styles (Assignment 6): \node[latent] / \node[obs]
+\tikzset{
+  latent/.style={circle,draw,minimum size=11mm,inner sep=1pt},
+  obs/.style={latent,fill=gray!30},
+  edge/.style={-{Latex[length=2mm]}}
+}
+
+% ---- lists, code, colour, links --------------------------------------------
+\usepackage{enumitem}
+\usepackage[table]{xcolor}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small, columns=fullflexible, breaklines=true,
+        frame=single, keywordstyle=\color{blue!60!black}, commentstyle=\color{green!40!black},
+        language=Python, showstringspaces=false}
+\usepackage{framed}
+\definecolor{shadecolor}{gray}{0.93}
+\usepackage{csquotes}
+
+% ---- section styling: "Assignment N: ..." / "Problem k: ..." ---------------
+\usepackage{titlesec}
+\titleformat{\section}{\newpage\LARGE\bfseries}{Assignment \thesection:}{0.5em}{}
+\titleformat{\subsection}{\Large\bfseries}{Problem \thesubsection:}{0.5em}{}
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\usepackage{titletoc}
+\titlecontents{section}[0pt]{\addvspace{0.6em}\bfseries}
+  {Assignment \thecontentslabel:\quad}{}{\hfill\contentspage}
+\titlecontents{subsection}[1.5em]{}
+  {Problem \thecontentslabel:\quad}{}{\titlerule*[0.6pc]{.}\contentspage}
+\setcounter{tocdepth}{2}
+
+% ---- question / answer macros ----------------------------------------------
+% \problempart{1a}{Short title}   heading for one lettered part of a problem
+% \question{...}                  the prompt, restated so the PDF is self-contained
+% \expect{...}                    what the course staff expect in the answer
+% \begin{solution} ... \end{solution}   OUR answer (shaded, breaks across pages)
+% \codepart{N.x}                  pointer to the notebook for programming parts
+% \todo{...}                      red placeholder; must be gone before submission
+\newcommand{\problempart}[2]{\subsubsection*{(#1)\ #2}}
+\newcommand{\question}[1]{#1\par}
+\newcommand{\note}[1]{\medskip\noindent\textbf{Note:} #1\par}
+\newcommand{\hint}[1]{\medskip\noindent\textit{Hint:} #1\par}
+\newcommand{\expect}[1]{\medskip\noindent\fbox{\parbox{0.97\linewidth}{\textbf{What we expect:} #1}}\par}
+\newenvironment{solution}{\begin{shaded}\noindent\textbf{Solution.}\ }{\end{shaded}}
+\newcommand{\codepart}[1]{\noindent\textit{Programming part. The implementation, documentation and test output are
+  in the notebook, section~\textbf{#1}.}\par}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+% hyperref last, as it patches sectioning commands
+\usepackage[hidelinks]{hyperref}

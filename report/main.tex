@@ -1,0 +1,47 @@
+\documentclass[11pt,a4paper]{article}
+\input{preamble}
+\input{team}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{CS221 Mini Projects: Theoretical Part}
+\rhead{\nouppercase{\leftmark}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\sectionmark}[1]{\markboth{Assignment \thesection: #1}{}}
+
+\begin{document}
+
+% ---------------------------------------------------------------- title page
+\begin{titlepage}
+  \centering
+  {\Large Artificial Intelligence: Principles and Techniques\par}
+  \vspace{0.5em}
+  {\large Mini Projects based on Stanford CS221 (Spring 2026) coursework\par}
+  \vspace{2.5em}
+  {\Huge\bfseries Theoretical Part\par}
+  \vspace{0.5em}
+  {\large Written solutions to Assignments 1--7\par}
+  \vspace{3em}
+  {\large\bfseries \teamname\par}
+  \vspace{1em}
+  \teamtable
+  \vfill
+  {\small The programming parts are in the companion notebook
+   \texttt{CS221\_Mini\_Projects.ipynb}, which uses the same numbering.\par}
+  \vspace{1em}
+  {\large \today\par}
+\end{titlepage}
+
+\tableofcontents
+
+% ------------------------------------------------------------- assignments
+\input{sections/01_foundations}
+\input{sections/02_sentiment}
+\input{sections/03_route}
+\input{sections/04_mountaincar}
+\input{sections/05_pacman}
+\input{sections/06_bayesian}
+\input{sections/07_logic}
+
+\end{document}

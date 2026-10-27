@@ -1,0 +1,283 @@
+\documentclass{article}
+
+% Page format
+\usepackage{fancyhdr}
+\usepackage[margin=1in]{geometry}
+
+% Math and utilities
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools,amsthm}
+\usepackage{enumitem,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\newtheoremstyle{case}{}{}{}{}{}{:}{ }{}
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\Var}{\text{Var}}
+\DeclareMathOperator{\Cov}{\text{Cov}}
+\newcommand{\bvec}[1]{\mathbf{#1}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\norm}[2][2]{\| #2\|_{#1}}
+
+\usepackage{framed}
+\definecolor{shadecolor}{gray}{0.9}
+\theoremstyle{definition}
+\newtheorem*{answer}{Answer}
+\newcommand{\note}[1]{\noindent{[\textbf{NOTE:} #1]}}
+\newcommand{\hint}[1]{\noindent{[\textbf{HINT:} #1]}}
+\newcommand{\recall}[1]{\noindent{[\textbf{RECALL:} #1]}}
+\newcommand{\expect}[1]{\noindent{[\textbf{What we expect:} #1]}}
+\newcommand{\mysolution}[1]{\noindent{\begin{shaded}\textbf{Your Solution:}\ #1 \end{shaded}}}
+
+\title{\textbf{CS221 -- Artificial Intelligence: \\Principles and Techniques}\\Homework 1: Foundations\\Spring 2026}
+\date{}
+
+\chead{Foundations}
+\rhead{\today}
+\lfoot{}
+\cfoot{CS221: Artificial Intelligence: Principles and Techniques}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\pagestyle{fancy}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\begin{tabular}{rl}
+SUNet ID: & [your SUNet ID] \\
+Name: & [your first and last name] \\
+Collaborators: & [list all the people you worked with]
+\end{tabular}
+\end{center}
+
+\textit{By turning in this assignment, I agree by the Stanford honor code and declare that all of this is my own work.} \\
+
+\section*{Installation Guide for Homework Environment}
+
+\subsection*{Prerequisites:}
+Ensure that you're using Python version \texttt{3.12}. Check your Python version by running:
+
+\begin{verbatim}
+python --version
+\end{verbatim}
+
+or
+
+\begin{verbatim}
+python3 --version
+\end{verbatim}
+
+\subsection*{Installing Miniconda:}
+
+\subsubsection*{Windows:}
+\begin{enumerate}
+    \item Download the Miniconda installer for Windows from the \href{https://docs.conda.io/en/latest/miniconda.html}{official site}.
+    \item Double-click the \texttt{.exe} file to start the installation.
+    \item Follow the installation prompts. When asked to add Miniconda to your PATH, choose ``Yes.''
+\end{enumerate}
+
+\subsubsection*{Linux:}
+\begin{enumerate}
+    \item Download the Miniconda installer for Linux from the \href{https://docs.conda.io/en/latest/miniconda.html}{official site}.
+    \item Navigate to the directory where you downloaded the installer and run:
+\end{enumerate}
+\begin{verbatim}
+chmod +x Miniconda3-latest-Linux-x86_64.sh
+\end{verbatim}
+\begin{verbatim}
+./Miniconda3-latest-Linux-x86_64.sh
+\end{verbatim}
+\begin{enumerate}[resume]
+    \item Follow the installation prompts.
+\end{enumerate}
+
+\subsubsection*{Mac:}
+\begin{enumerate}
+    \item Download the Miniconda installer for Mac from the \href{https://docs.conda.io/en/latest/miniconda.html}{official site}.
+    \item Open the downloaded \texttt{.pkg} file to start the installation.
+    \item Follow the installation prompts.
+\end{enumerate}
+
+\subsection*{Setting Up the Homework Environment:}
+After installing Miniconda, set up your environment with the following commands:
+
+\begin{verbatim}
+conda create --name cs221 python=3.12
+\end{verbatim}
+\begin{verbatim}
+conda activate cs221
+\end{verbatim}
+
+Welcome to your first CS221 assignment! The goal of this assignment is to sharpen your math, programming, and ethical analysis skills needed for this class. If you meet the prerequisites, you should find these problems relatively innocuous. Some of these problems will occur again as subproblems of later homeworks, so make sure you know how to do them. If you're unsure about them or need a refresher, we recommend going through our prerequisites module or other resources on the Internet, or coming to office hours.
+
+\textbf{Before you get started, please read the Homeworks section on the course website thoroughly}.
+
+We've created a LaTeX template \href{../../with-prompt-templates/hw1-foundations-template.zip}{here} for you to use that contains the prompts for each question.
+
+\section*{Prerequisite Quiz}
+
+Please take the prerequisite quiz found on Gradescope. The quiz has the same due date as HW1. The quiz is open book, you have unlimited attempts, and there is no time limit. However, you will still be a given a grade for it based on correctness.
+
+\section*{Problem 1: Optimization and probability}
+
+In this class, we will cast a lot of AI problems as optimization problems, that is, finding the best solution in a rigorous mathematical sense. The \href{https://web.stanford.edu/class/math51/stanford/math51book.pdf}{textbook for MATH 51} may be useful for the optimization problems here, specifically the sections ``Maxima, Minima, and Critical Points'' (p. 186) and ``Gradients, Local Approximations, and Gradient Descent'' (p. 209).
+
+At the same time, we must be adroit at coping with uncertainty in the world, and for that, we appeal to tools from probability. The \href{https://chrispiech.github.io/probabilityForComputerScientists/en/}{course reader for CS109} may be useful for the probability problems here, specifically the sections ``\href{https://chrispiech.github.io/probabilityForComputerScientists/en/part1/cond_prob/}{Conditional Probability}'', ``\href{https://chrispiech.github.io/probabilityForComputerScientists/en/part2/expectation/}{Expectation}'', ``\href{https://chrispiech.github.io/probabilityForComputerScientists/en/part3/joint/}{Joint Probability}'', and ``\href{https://chrispiech.github.io/probabilityForComputerScientists/en/part1/bayes_theorem/}{Bayes' Theorem}''.
+
+\begin{enumerate}[label=\alph*.]
+
+\item Let $x_1, \dots, x_n$ be real numbers representing positions on a number line. Let $w_1, \dots, w_n$ be positive real numbers representing the importance of each of these positions. Consider the quadratic function: $f(\theta) = \sum_{i=1}^n w_i (\theta - x_i)^2$. Note that $\theta$ here is a scalar. What value of $\theta$ minimizes $f(\theta)$? Show that the optimum you find is indeed a minimum. What problematic issues could arise if some of the $w_i$'s are negative?
+
+\note{You can think about this problem as trying to find the point $\theta$ that's not too far away from the $x_i$'s. Over time, hopefully you'll appreciate how nice quadratic functions are to minimize.}
+\expect{An expression for the value of $\theta$ that minimizes $f(\theta)$ and how you got it. A short calculation/argument to show that it is a minimum. 1-2 sentences describing a problem that could arise if some of the $w_i$'s are negative.}
+\mysolution{}
+
+\item In this class, we will frequently encounter operators such as sum, min, and max. Let's explore what happens if we switch the order of these operators. Let $f(\mathbf x) = \min_{s \in [-1,1]} \sum_{i=1}^d s x_i$ and $g(\mathbf x) = \sum_{i=1}^d \min_{s_i \in [-1,1]} s_i x_i$, where $\mathbf x = (x_1, \dots, x_d) \in \mathbb{R}^d$ is a real vector and $[-1,1]$ means the closed interval from $-1$ to $1$. Which of $f(\mathbf x) \le g(\mathbf x)$, $f(\mathbf x) = g(\mathbf x)$, or $f(\mathbf x) \ge g(\mathbf x)$ is true for all $\mathbf x$? Prove it.
+
+\hint{You may find it helpful to rewrite the functions so that they are minimizing the same quantity. The way to do this would involve defining the coefficients of $s_i$ for all terms in the summation. Then examine how the constraints on $s_i$ for $f(\mathbf x)$ differ from those for $g(\mathbf x)$.}
+\expect{A short (3-5) line/sentence proof. You should use mathematical notation in your proof, but can also make your argument in words. Your proof may be somewhat informal, but please describe your steps and thought process clearly.}
+\mysolution{}
+
+\item Suppose you repeatedly roll a fair six-sided die until you roll a $1$ (and then you stop). Every time you roll a $3$, you win $a$ points, and every time you roll a $6$, you lose $b$ points. You do not win or lose any points if you roll a $2$, $4$ or a $5$. What is the expected number of points (as a function of $a$ and $b$) you will have when you stop?
+
+\hint{You will find it helpful to define a recurrence. If you define $V$ as the expected number of points you get from playing the game, what happens if you roll a $3$? You win $a$ points and then get to play again. What about the other cases? Can you write this as a recurrence? More precisely, can you write an equation that relates $V$ to an expression involving itself, which can then be solved to find the value of $V$?}
+\expect{A recurrence to represent the problem, a short explanation for the recurrence, and the resulting expression from solving the recurrence (no more than 1-2 lines).}
+\mysolution{}
+
+\item Suppose the probability of a coin turning up heads is $p$ (where $0 < p < 1$), and we flip it $5$ times and get $\{ \text{T}, \text{H}, \text{H}, \text{H}, \text{H} \}$. We know the probability (likelihood) of obtaining this sequence is $L(p) = (1-p) p p p p = p^4(1-p)$. What value of $p$ maximizes $L(p)$? Prove that this value of $p$ maximizes $L(p)$. What is an intuitive interpretation of this value of $p$?
+
+\hint{Consider taking the derivative of $\log L(p)$. You can also directly take the derivative of $L(p)$, but it is cleaner and more natural to differentiate $\log L(p)$. You can verify for yourself that the value of $p$ which maximizes $\log L(p)$ must also maximize $L(p)$ (you are not required to prove this in your solution).}
+\expect{The value of $p$ that maximizes $L(p)$ and the work/calculation used to solve for it. Note that you must prove that it is a maximum. A 1-sentence intuitive interpretation of the value of $p$.}
+\mysolution{}
+
+\item Now for a little bit of practice manipulating conditional probabilities. Suppose that $A$ and $B$ are two events such that $P(A|B) = P(B|A)$. We also know that $P(A \cup B) = \frac{1}{3}$ and $P(A \cap B) > 0$. Prove that $P(A) > \frac{1}{6}$.
+
+\hint{Note that $A$ and $B$ are not necessarily mutually exclusive. Consider how we can relate $P(A \cup B)$ and $P(A \cap B)$.}
+\expect{A short (~5 line) proof/derivation.}
+\mysolution{}
+
+\item Let's practice taking gradients, which is a key operation for being able to optimize continuous functions. For $\mathbf w \in \mathbb R^d$ (represented as a column vector), and constants $\mathbf a_i, \mathbf b_j \in \mathbb R^d$ (also represented as column vectors), $\lambda \in \mathbb R$, and a positive integer $n$, define the scalar-valued function
+\[
+f(\mathbf w) = \Bigg( \sum_{i=1}^n \sum_{j=1}^n (\mathbf a_i^\top \mathbf w - \mathbf b_j^\top \mathbf w)^2 \Bigg) + \frac{\lambda}{2}
+\|\mathbf w\|_2^2,
+\]
+where the vector is $\mathbf w = (w_1, \dots, w_d)^\top$ and $\|\mathbf w\|_2 = \sqrt{\sum_{k=1}^d w_k^2} = \sqrt{{\mathbf w}^T {\mathbf w}}$ is known as the $L_2$ norm. Compute the gradient $\nabla f(\mathbf w)$.
+
+\recall{the gradient is a $d$-dimensional vector of the partial derivatives with respect to each $w_i$: 
+\[
+\nabla f(\mathbf w) = \left(\frac{\partial f(\mathbf w)}{\partial w_1}, \dots \frac{\partial f(\mathbf w)}{\partial w_d}\right)^\top.
+\]}
+If you're not comfortable with vector calculus, first warm up by working out this problem using scalars in place of vectors and derivatives in place of gradients. Not everything for scalars goes through for vectors, but the two should at least be consistent with each other (when $d=1$). Do not write out summations over dimensions, because that gets tedious.
+
+\expect{An expression for the gradient and the work used to derive it. (~5 lines). No need to expand out terms unnecessarily; try to write the final answer compactly.}
+\mysolution{}
+
+\end{enumerate}
+
+\section*{Problem 2: Complexity}
+
+When designing algorithms, it's useful to be able to do quick back-of-the-envelope calculations to see how much time or space an algorithm needs. Hopefully, you'll start to get more intuition for this by being exposed to different types of problems.
+
+\begin{enumerate}[label=\alph*.]
+
+\item Suppose we have an $n \times n$ grid of points, where we'd like to place $3$ arbitrary axis-aligned rectangles (i.e., the sides of the rectangle are parallel to the axes). Each corner of each rectangle must be one of the points in the grid, but otherwise there are no constraints on the location or size of the rectangles. For example, it is possible for all four corners of a single rectangle to be the same point (resulting in a rectangle of size 0) or for all $3$ rectangles to be on top of each other. How many possible ways are there to place $3$ rectangles on the grid? In general, we only care about asymptotic complexity, so give your answer in the form of $O(n^c)$ or $O(c^n)$ for some integer $c$.
+
+\note{It is unnecessary to consider whether order matters in this problem, since we are asking for asymptotic complexity. You are free to assume either in your solution, as it doesn't change the final answer.}
+\expect{A big-O bound for the number of possible ways to place $3$ rectangles and some simple explanation/reasoning for the answer (~2 sentences).}
+\mysolution{}
+
+\item Suppose we have an $n\times 2n$ grid of points. We start at the point in the upper-left corner (the point at position $(1,1)$), and we would like to reach the point at the lower-right corner (the point at position $(n,2n)$) by taking single steps down or to the right. Suppose we are provided with a function $c(i, j)$ that outputs the cost associated with position $(i, j)$, and assume it takes constant time to compute for each position. Note that $c(i, j)$ can be negative. Define the cost of a path as the sum of $c(i,j)$ for all points $(i,j)$ along the path, including both endpoints. Give an algorithm for computing the cost of the minimum-cost path from $(1,1)$ to $(n,2n)$ in the most efficient way (with the smallest big-O time complexity). What is the runtime (just give the big-O)?
+
+\expect{A description of the algorithm for computing the cost of the minimum-cost path as efficiently as possible (~5 sentences). The big-O runtime and a short explanation of how it arises from the algorithm.}
+\mysolution{}
+
+\end{enumerate}
+
+\section*{Problem 3: Ethical Issue Spotting}
+
+One of the goals of this course is to teach you how to tackle real-world problems with tools from AI. But real-world problems have real-world consequences. Along with technical skills, an important skill every practitioner of AI needs to develop is an awareness of the ethical issues associated with AI. The purpose of this exercise is to practice spotting potential ethical concerns in applications of AI - even seemingly innocuous ones.
+
+In this question, you will explore the ethics of four different real-world scenarios using the ethics guidelines produced by a machine learning research venue, the NeurIPS conference. The \href{https://nips.cc/Conferences/2023/EthicsGuidelinesForReviewers}{NeurIPS Ethical Guidelines} list seventeen non-exhaustive concerns under General Ethical Conduct and Potential Negative Social Impacts (the numbered lists). For each scenario, you will write a potential negative impacts statement. To do so, you will first determine if the algorithm / dataset / technique could have a potential negative social impact or violate general ethical conduct (again, the seventeen numbered items taken from the \href{https://nips.cc/Conferences/2023/EthicsGuidelinesForReviewers}{NeurIPS Ethical Guidelines} page). If the scenario does violate ethical conduct or has potential negative social impacts, list one concern it violates and justify why you think that concern applies to the scenario. If you do \textbf{not} think the scenario has an ethical concern, explain how you came to that decision. Unlike earlier problems in the homework there are many possible good answers. If you can justify your answer, then you should feel confident that you have answered the question well.
+
+Each of the scenarios is drawn from a real AI research paper; you should think about why the researchers may have chosen for the algorithms to behave in the way as described in the scenario. The ethics of AI research closely mirror the potential real-world consequences of deploying AI, and the lessons you'll draw from this exercise will certainly be applicable to deploying AI at scale. As a note, you are \textbf{not} required to read the original papers, but we have linked to them in case they might be useful. Furthermore, you are welcome to respond to anything in the linked article that's not mentioned in the written scenario, but the scenarios as described here should provide enough detail to find at least one concern.
+
+\expect{A 2-5 sentence paragraph for each of the scenarios where you either A. identify at least one ethical concern from the \href{https://nips.cc/Conferences/2023/EthicsGuidelinesForReviewers}{NeurIPS Ethical Guidelines} and justify why you think it applies, or B. state that you don't think a concern exists and justify why that's the case. Chosen scenarios may have anywhere from zero to multiple concerns that match, but you are only required to pick one concern (if it exists) and justify your decision accordingly. Furthermore, copy out and \underline{underline} the ethical checklist item to which you are referring as part of your answer (i.e.: \underline{Severely damage the environment}). We have also included a citation in the example solution below, but you are not required to add citations to your response.}
+
+\textbf{Example Scenario}: You work for a U.S. hospital that has recently implemented a new intervention program that enrolls at-risk patients in programs to help address their chronic medical issues proactively before the patients end up in the hospital. The intervention program automatically identifies at-risk patients by predicting patients' risk scores, which are measured in terms of healthcare costs. However, you notice that for a given risk score tier, the Black patients are considerably sicker when enrolled than white patients, even though their assigned illness risk score is identical. You manually re-assign patients' risk scores based on their current symptoms and notice that the percentage of Black patients who would be enrolled has increased from 17\% to over 45\% \href{https://doi.org/10.1126/science.aax2342}{[1]}.
+
+\textbf{Example Solution}: This algorithm has likely \underline{encoded, contains, or potentially exacerbates bias against} \underline{people of a certain race or ethnicity} since the algorithm predicts healthcare costs. Because access to medical care in the U.S. is unequal, Black patients tend to have lower healthcare costs than their white counterparts \href{https://www.nap.edu/catalog/10260/unequal-treatment-confronting-racial-and-ethnic-disparities-in-health-care}{[2]}. Thus the algorithm will incorrectly predict that they are at lower risk.
+
+\begin{enumerate}[label=\alph*.]
+
+\item An investment firm develops a simple machine learning model to predict whether an individual is likely to default on a loan from a variety of factors, including location, age, credit score, and public record. After looking through their results, you find that the model predicts mainly based on location and that the model mainly accepts loans from urban centers and denies loans from rural applicants \href{https://www.kaggle.com/c/loan-default-prediction/data}{[3]}. Furthermore, looking at the gender and ethnicity of the applicants, you find that the model has a significantly higher false positive rate for Black and male applicants than for other groups. In a false positive prediction, a model misclassifies someone who does not default as likely to default.
+\mysolution{}
+
+\item Stylometry is a way of predicting the author of contested or anonymous text by analyzing the writing patterns in the anonymous text and other texts written by the potential authors. Recently, highly accurate machine learning algorithms have been developed for this task. While these models are typically used to analyze historical documents and literature, they could be used for deanonymizing a wide range of texts, including code \href{https://dl.acm.org/doi/10.5555/2831143.2831160}{[4]}.
+\mysolution{}
+
+\item A research group scraped millions of faces of celebrities off of Google images to develop facial recognition technology \href{https://www.robots.ox.ac.uk/~vgg/data/vgg_face/}{[5]}. The celebrities did not give permission for their images to be used in the dataset and many of the images are copyrighted. For copyrighted photos, the dataset provides URL links to the original image along with bounding boxes for the face.
+\mysolution{}
+
+\item Researchers have recently created a machine learning model that can predict plant species automatically directly from a single photo \href{https://www.inaturalist.org/blog/31806-a-new-vision-model}{[6]}. The model was trained using photos uploaded to the iNaturalist app by users who consented to use of their photos for research purposes, and the model is only used within the app to help users identify plants they might come across in the wild.
+\mysolution{}
+
+\end{enumerate}
+
+\section*{Problem 4: Programming}
+
+In this problem, you will implement a bunch of short functions. The main purpose of this exercise is to familiarize yourself with Python, but as a bonus, the functions that you will implement will come in handy in subsequent homeworks.
+
+\textbf{Do not import any outside libraries (e.g. numpy).} Only standard Python libraries and/or the libraries imported in the starter code are allowed.
+
+If you're new to Python, the following provide pointers to various tutorials and examples for the language:
+\begin{itemize}
+    \item \href{https://wiki.python.org/moin/BeginnersGuide/Programmers}{Python for Programmers}
+    \item \href{https://wiki.python.org/moin/SimplePrograms}{Example programs of increasing complexity}
+\end{itemize}
+
+\expect{Python code implementing the functions provided in submission.py. Try to make your code as clean and simple as possible and be sure to write your answers between the begin answer and end answer comments.}
+
+\begin{enumerate}[label=\alph*.]
+    \item Implement \texttt{find\_alphabetically\_first\_word} in \texttt{submission.py}.
+    \item Implement \texttt{euclidean\_distance} in \texttt{submission.py}.
+    \item Implement \texttt{mutate\_sentences} in \texttt{submission.py}.
+    \item Implement \texttt{sparse\_vector\_dot\_product} in \texttt{submission.py}.
+    \item Implement \texttt{increment\_sparse\_vector} in \texttt{submission.py}.
+    \item Implement \texttt{find\_nonsingleton\_words} in \texttt{submission.py}.
+\end{enumerate}
+
+\section*{Submission}
+
+Submission is done on Gradescope.
+
+\textbf{Written:} When submitting the written parts, make sure to select \textbf{all} the pages that contain part of your answer for that problem, or else you will not get credit. To double check after submission, you can click on each problem link on the right side, and it should show the pages that are selected for that problem.
+
+\textbf{Programming:} After you submit, the autograder will take a few minutes to run. Check back after it runs to make sure that your submission succeeded. If your autograder crashes, you will receive a 0 on the programming part of the assignment. Note: the only file to be submitted to Gradescope is \texttt{submission.py}.
+
+More details can be found in the Submission section on the course website.
+
+\hrule
+\vspace{0.5em}
+
+[1] \href{https://doi.org/10.1126/science.aax2342}{Obermeyer et al. Dissecting racial bias in an algorithm used to manage the health of populations. 2019.}
+
+[2] \href{https://www.nap.edu/catalog/10260/unequal-treatment-confronting-racial-and-ethnic-disparities-in-health-care}{Institue of Medicine of the National Academies. Unequal Treatment: Confronting Racial and Ethnic Disparities in Health Care. 2003.}
+
+[3] \href{https://www.kaggle.com/c/loan-default-prediction/data}{Imperial College London. Loan Default Prediction Dataset. 2014.}
+
+[4] \href{https://dl.acm.org/doi/10.5555/2831143.2831160}{Caliskan-Islam et. al. De-anonymizing programmers via code stylometry. 2015.}
+
+[5] \href{https://www.robots.ox.ac.uk/~vgg/data/vgg_face/}{Parkhi et al. VGG Face Dataset. 2015.}
+
+[6] \href{https://www.inaturalist.org/blog/31806-a-new-vision-model}{iNaturalist. A new vision model. 2020.}
+
+\end{document}

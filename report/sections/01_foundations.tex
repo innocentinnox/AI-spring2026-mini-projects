@@ -1,0 +1,128 @@
+% ============================================================================
+\section{Foundations}
+\label{sec:foundations}
+% Source: assignments/01_foundations/index.html
+% ============================================================================
+
+% ----------------------------------------------------------------------------
+\subsection{Optimization and probability}
+
+\problempart{1a}{Weighted quadratic minimisation}
+\question{Let $x_1,\dots,x_n\in\R$ and weights $w_1,\dots,w_n>0$. For
+$f(\theta)=\sum_{i=1}^n w_i(\theta-x_i)^2$ ($\theta$ scalar), find the minimiser, show it is a minimum,
+and explain what goes wrong if some $w_i$ are negative.}
+\expect{Expression for the minimising $\theta$ and its derivation; a short argument that it is a minimum;
+1--2 sentences on negative weights.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{1b}{Swapping min and sum}
+\question{Let $f(\bvec x)=\min_{s\in[-1,1]}\sum_{i=1}^d s\,x_i$ and
+$g(\bvec x)=\sum_{i=1}^d\min_{s_i\in[-1,1]} s_i x_i$ for $\bvec x\in\R^d$.
+Which of $f\le g$, $f=g$, $f\ge g$ holds for all $\bvec x$? Prove it.}
+\expect{A short (3--5 line) proof using mathematical notation.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{1c}{Expected points of a dice game}
+\question{Roll a fair six-sided die until a $1$ appears. Each $3$ wins $a$ points, each $6$ loses $b$
+points, and $2,4,5$ change nothing. What is the expected number of points at the end, as a function of $a,b$?}
+\expect{A recurrence for the value $V$, a short explanation of it, and the solved expression.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{1d}{Maximum likelihood for a coin}
+\question{A coin with $P(\text{H})=p$, $0<p<1$, gives $\{\text{T},\text{H},\text{H},\text{H},\text{H}\}$, so
+$L(p)=p^4(1-p)$. Which $p$ maximises $L$? Prove it is a maximum and give an intuitive interpretation.}
+\expect{The maximiser with its derivation (e.g.\ via $\log L$), proof that it is a maximum, and a
+1-sentence interpretation.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{1e}{Conditional probability}
+\question{Events $A,B$ satisfy $P(A\mid B)=P(B\mid A)$, $P(A\cup B)=\tfrac13$ and $P(A\cap B)>0$.
+Prove that $P(A)>\tfrac16$.}
+\expect{A short ($\sim$5 line) proof.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{1f}{Gradient}
+\question{For $\bvec w\in\R^d$, constants $\bvec a_i,\bvec b_j\in\R^d$, $\lambda\in\R$ and $n\in\mathbb{N}$,
+\[
+f(\bvec w)=\Bigg(\sum_{i=1}^n\sum_{j=1}^n(\bvec a_i^\top\bvec w-\bvec b_j^\top\bvec w)^2\Bigg)
++\frac{\lambda}{2}\norm{\bvec w}_2^2 .
+\]
+Compute $\nabla f(\bvec w)$ (no summations over dimensions).}
+\expect{A compact expression for the gradient and its derivation ($\sim$5 lines).}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Complexity}
+
+\problempart{2a}{Placing three rectangles}
+\question{On an $n\times n$ grid of points, how many ways are there to place $3$ axis-aligned rectangles
+whose corners are grid points (degenerate and overlapping rectangles allowed)? Answer as $O(n^c)$ or $O(c^n)$.}
+\expect{A big-O bound and $\sim$2 sentences of reasoning.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{2b}{Minimum-cost monotone path}
+\question{On an $n\times 2n$ grid, go from $(1,1)$ to $(n,2n)$ using only down/right steps. Each point has
+cost $c(i,j)$ (possibly negative, $O(1)$ to evaluate), and a path's cost is the sum over the points it visits.
+Give the most efficient algorithm for the minimum path cost and its runtime.}
+\expect{Algorithm description ($\sim$5 sentences), the big-O runtime, and why.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Ethical issue spotting}
+
+For each scenario, either identify one concern from the NeurIPS Ethics Guidelines (General Ethical Conduct /
+Potential Negative Social Impacts), copy it out and \underline{underline} it, and justify it, or argue that
+there is no concern.
+
+\expect{A 2--5 sentence paragraph per scenario.}
+
+\problempart{3a}{Loan-default prediction}
+\question{A loan-default model relies mainly on location, accepts urban and rejects rural applicants, and
+has a significantly higher false-positive rate for Black and male applicants.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{3b}{Stylometry}
+\question{Highly accurate ML stylometry predicts the authors of anonymous texts (including code) and could
+de-anonymise a wide range of writing.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{3c}{Celebrity face dataset}
+\question{Millions of celebrity faces were scraped from Google Images, without permission and including
+copyrighted images, to build facial recognition; copyrighted images are distributed as URLs plus bounding boxes.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{3d}{Plant-species identification}
+\question{A model identifies plant species from a photo. It was trained on iNaturalist photos whose users
+consented to research use, and it is only used inside the app.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Programming}
+\codepart{1.4a--1.4f}
+Functions: \texttt{find\_alphabetically\_first\_word}, \texttt{euclidean\_distance},
+\texttt{mutate\_sentences}, \texttt{sparse\_vector\_dot\_product}, \texttt{increment\_sparse\_vector},
+\texttt{find\_nonsingleton\_words}.

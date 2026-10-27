@@ -1,0 +1,112 @@
+% ============================================================================
+\section{Route Planning}
+\label{sec:route}
+% Source: assignments/03_route/index.html
+% ============================================================================
+
+% ----------------------------------------------------------------------------
+\subsection{Grid city}
+
+Infinite grid of integer locations $(x,y)$; $s_{\text{start}}=(0,0)$;
+$\text{Actions}(s)=\{(+1,0),(-1,0),(0,+1),(0,-1)\}$; $\text{Succ}(s,a)=s+a$;
+$\text{Cost}((x,y),a)=1+\max(x,0)$; $\text{IsEnd}(s)=\indic{s=(m,n)}$ with $m,n\ge0$.
+
+\problempart{1a}{Minimum cost}
+\question{What is the minimum cost of reaching $(m,n)$ from $(0,0)$? Describe a path achieving it.
+Is it unique?}
+\expect{An expression for the minimum cost; 1--2 sentences describing one optimal path and whether it is unique.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{1b}{UCS on this problem}
+\question{True or false:
+(i) UCS never terminates because there are infinitely many states.
+(ii) UCS returns the minimum-cost path and explores only $(x,y)$ with $0\le x\le m$, $0\le y\le n$.
+(iii) UCS returns the minimum-cost path and explores only locations whose past cost is $\le$ the minimum cost to $(m,n)$.}
+\expect{T/F for each sub-part.}
+\begin{solution}
+(i) \todo{} \quad (ii) \todo{} \quad (iii) \todo{}
+\end{solution}
+
+\problempart{1c}{UCS on an arbitrary graph}
+\question{True or false:
+(i) Adding a connection between two nodes cannot increase the minimum cost between any start and end node.
+(ii) Making an action's cost small enough (possibly negative) guarantees that it appears in the path UCS returns, if a path exists.
+(iii) Increasing every action's cost by 1 does not change the minimum-cost path, only its cost.}
+\expect{T/F for each sub-part.}
+\begin{solution}
+(i) \todo{} \quad (ii) \todo{} \quad (iii) \todo{}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Finding shortest paths}
+
+\problempart{2a}{\texttt{ShortestPathProblem}}
+\codepart{3.2a}
+
+\problempart{2b}{Stanford shortest-path experiments}
+\question{Choose start locations and end tags with \texttt{get\_stanford\_shortest\_path\_problem}, and
+visualise them. Give (i) a setting that gave new insight into travelling around campus (was the system useful?) and
+(ii) a setting where the minimum-cost path is \emph{not} desirable. Is that caused by modelling assumptions
+(missing tags or paths, inaccurate locations or distances)?}
+\expect{Screenshots of both visualisations; one or more sentences on something learned about travelling, and
+something incorrect about the map or the modelling assumptions.}
+\begin{solution}
+\todo{screenshots: figures/03\_route/2b\_*.png, plus discussion}
+% \begin{figure}[H]\centering
+%   \includegraphics[width=0.48\linewidth]{03_route/2b_insight.png}\hfill
+%   \includegraphics[width=0.48\linewidth]{03_route/2b_undesirable.png}
+%   \caption{...}\end{figure}
+\end{solution}
+
+\problempart{2c}{Negative externalities}
+\question{What negative externalities could follow from wide deployment of this shortest-path system? Discuss
+the effects on (1) users and (2) non-users, and ways to reduce the mismatch between the model and the real world
+(see ``Why Traffic Apps Make Congestion Worse'', ``The Perfect Selfishness of Mapping Apps'', and the
+Externalities module).}
+\expect{3--5 sentences: two externalities (one for users, one for non-users) and at least one mitigation.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Finding shortest paths with unordered waypoints}
+
+\problempart{3a}{\texttt{WaypointsShortestPathProblem}}
+\codepart{3.3a}
+
+\problempart{3b}{Size of the state space}
+\question{With $n$ locations and $k$ waypoint tags, what is the maximum number of states UCS could visit
+under a suitable state definition for 3a?}
+\expect{An expression in $n$ and $k$ with a brief justification.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+\problempart{3c}{Stanford waypoints experiment}
+\question{Choose a start location, waypoint tags (at least two) and an end tag with
+\texttt{get\_stanford\_waypoints\_shortest\_path\_problem}, and visualise the route. What is unexpected or
+interesting about it? Does it match your expectations, and what important factors does it fail to capture?}
+\expect{A screenshot, the list of waypoint tags, and one or more sentences of discussion.}
+\begin{solution}
+\todo{screenshot figures/03\_route/3c\_*.png, tags used, discussion}
+\end{solution}
+
+\problempart{3d}{Ride-sharing and dual use}
+\question{Ride-sharing apps use similar routing and have been criticised for exploitative nudges (e.g.\
+``forward dispatch''). How could unordered waypoints improve the driver experience between a drop-off and the
+next pick-up, and what driver information would you need? As a dual-use concern, how could a company use the
+feature to raise profits at the expense of driver health, or what are the downsides of collecting that information?}
+\expect{3--5 sentences: (a) waypoints that improve the driver experience; (b) at least one dimension of
+\emph{driver identity} (not trip attributes such as time of day) that informs the choice; (c) a harmful use or a
+downside of the data collection.}
+\begin{solution}
+\todo{answer}
+\end{solution}
+
+% ----------------------------------------------------------------------------
+\subsection{Speeding up search with A*}
+\codepart{3.4a--3.4c}
+\texttt{a\_star\_reduction} (A* as UCS on modified costs), \texttt{StraightLineHeuristic},
+\texttt{NoWaypointsHeuristic}.

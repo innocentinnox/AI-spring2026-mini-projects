@@ -1,0 +1,22 @@
+# Normalise line endings for text; keep data files byte-exact.
+* text=auto
+
+*.py      text eol=lf
+*.tex     text eol=lf
+*.md      text eol=lf
+*.ipynb   text eol=lf
+*.json    text eol=lf
+*.lay     text eol=lf
+
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.pdf     binary
+*.zip     binary
+*.pbf     binary
+*.npy     binary
+*.pklz    binary
+*.p       binary
+*.train   binary
+*.dev     binary
