@@ -23,6 +23,27 @@ Group workspace for the seven mini projects based on the
 See [`docs/ASSIGNMENTS.md`](docs/ASSIGNMENTS.md) for a breakdown of every problem: what is written, what is coded,
 the required packages, and the known pitfalls.
 
+## Final deliverables (what goes on Moodle)
+
+> **Each team uploads ONE Python notebook and ONE PDF.** Everything in this repo exists to produce those two files.
+
+| Upload | Built from | How |
+|--------|-----------|-----|
+| `CS221_Mini_Projects.ipynb` | `notebook/CS221_Mini_Projects.ipynb`, executed top to bottom with all outputs saved | Run All in Jupyter, save, then run the packaging script |
+| `CS221_Mini_Projects.pdf` | `report/report.pdf`, built from `report/main.tex` + `report/sections/*.tex` | `cd report && latexmk` |
+
+The working notebook is already the final notebook. Each problem's `show_source(...)` cell prints the full
+documented implementation into the cell output, and the grader cells print the test results. Once the notebook has
+been executed and saved, it contains all of the work, so no separate notebooks have to be merged.
+Each member works on their own assignment section and the team **joins the work at the end** by:
+
+1. making sure every `assignments/*/submission.py` is final and every `\todo` in `report/` is gone;
+2. running the whole notebook once (Kernel > Restart & Run All) and saving it;
+3. building the PDF;
+4. running `python scripts/package_submission.py --name <TeamName>_CS221_MiniProjects`, which writes
+   `dist/CS221_Mini_Projects.ipynb` and `dist/CS221_Mini_Projects.pdf` (**the two files to upload**) plus a
+   fallback zip with the helper code. The brief allows a zip only for teams that use helper files.
+
 ## Repository layout
 
 ```
@@ -51,7 +72,9 @@ If `osmium` (Route Planning) fails to install, see [`assignments/03_route/README
 The Pac-Man and car-tracking GUIs need `tkinter` (included with the python.org and conda builds).
 
 **Report:** install a TeX distribution (MiKTeX or TeX Live, which both include `latexmk`), then
-`cd report && latexmk` produces `report/build/main.pdf`.
+`cd report && latexmk` produces **`report/report.pdf`**, which is committed so the whole team can see the
+current state. The auxiliary files go to `report/build/`, which is git-ignored. MiKTeX's automatic package install
+(`initexmf --set-config-value [MPM]AutoInstall=1`) fetches any missing LaTeX packages on the first build.
 
 ## Workflow
 

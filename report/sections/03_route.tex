@@ -7,9 +7,12 @@
 % ----------------------------------------------------------------------------
 \subsection{Grid city}
 
-Infinite grid of integer locations $(x,y)$; $s_{\text{start}}=(0,0)$;
-$\text{Actions}(s)=\{(+1,0),(-1,0),(0,+1),(0,-1)\}$; $\text{Succ}(s,a)=s+a$;
-$\text{Cost}((x,y),a)=1+\max(x,0)$; $\text{IsEnd}(s)=\indic{s=(m,n)}$ with $m,n\ge0$.
+Infinite grid of integer locations $(x,y)$, with $m,n\ge0$:
+\begin{itemize}[nosep]
+  \item $s_{\text{start}}=(0,0)$, \quad $\text{IsEnd}(s)=\indic{s=(m,n)}$
+  \item $\text{Actions}(s)=\{(+1,0),(-1,0),(0,+1),(0,-1)\}$, \quad $\text{Succ}(s,a)=s+a$
+  \item $\text{Cost}((x,y),a)=1+\max(x,0)$
+\end{itemize}
 
 \problempart{1a}{Minimum cost}
 \question{What is the minimum cost of reaching $(m,n)$ from $(0,0)$? Describe a path achieving it.
@@ -108,5 +111,8 @@ downside of the data collection.}
 % ----------------------------------------------------------------------------
 \subsection{Speeding up search with A*}
 \codepart{3.4a--3.4c}
-\texttt{a\_star\_reduction} (A* as UCS on modified costs), \texttt{StraightLineHeuristic},
-\texttt{NoWaypointsHeuristic}.
+\begin{itemize}[nosep]
+  \item \texttt{a\_star\_reduction}: A* as UCS on modified costs
+  \item \texttt{StraightLineHeuristic}
+  \item \texttt{NoWaypointsHeuristic}
+\end{itemize}

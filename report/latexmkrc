@@ -1,5 +1,9 @@
-# latexmk configuration: run `latexmk` inside report/ -> report/build/main.pdf
+# latexmk configuration: run `latexmk` inside report/
+#   -> report/report.pdf   final PDF (committed)
+#   -> report/build/       aux/log files (git-ignored)
 $pdf_mode = 1;            # pdflatex
-$out_dir  = 'build';
+$jobname  = 'report';
+$out_dir  = '.';
+$aux_dir  = 'build';
 @default_files = ('main.tex');
 $pdflatex = 'pdflatex -interaction=nonstopmode -file-line-error -synctex=1 %O %S';

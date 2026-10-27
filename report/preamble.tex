@@ -15,6 +15,9 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.4em}
 \setlength{\headheight}{14pt}
+\setlength{\emergencystretch}{3em}     % avoid overfull lines around long \texttt{...}
+% let long identifiers such as get\_stanford\_shortest\_path\_problem break after an underscore
+\AtBeginDocument{\renewcommand{\_}{\textunderscore\allowbreak}}
 
 % ---- maths ------------------------------------------------------------------
 \usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs,bm}
@@ -89,9 +92,9 @@
 % \todo{...}                      red placeholder; must be gone before submission
 \newcommand{\problempart}[2]{\subsubsection*{(#1)\ #2}}
 \newcommand{\question}[1]{#1\par}
-\newcommand{\note}[1]{\medskip\noindent\textbf{Note:} #1\par}
-\newcommand{\hint}[1]{\medskip\noindent\textit{Hint:} #1\par}
-\newcommand{\expect}[1]{\medskip\noindent\fbox{\parbox{0.97\linewidth}{\textbf{What we expect:} #1}}\par}
+\newcommand{\note}[1]{\par\medskip\noindent\textbf{Note:} #1\par}
+\newcommand{\hint}[1]{\par\medskip\noindent\textit{Hint:} #1\par}
+\newcommand{\expect}[1]{\par\medskip\noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{\textbf{What we expect:} #1}}\par}
 \newenvironment{solution}{\begin{shaded}\noindent\textbf{Solution.}\ }{\end{shaded}}
 \newcommand{\codepart}[1]{\noindent\textit{Programming part. The implementation, documentation and test output are
   in the notebook, section~\textbf{#1}.}\par}

@@ -5,7 +5,7 @@
 % ============================================================================
 
 Set-up: our car's position $a_t$ is observed. The other car's location is $C_t$ (hidden). The microphone reading
-is $D_t\sim\mathcal N(\norm{a_t-C_t}_2,\sigma^2)$. Lower-case $p(\cdot)$ denotes local conditional distributions
+is $D_t\sim\mathcal N(\norm{a_t-C_t},\sigma^2)$. Lower-case $p(\cdot)$ denotes local conditional distributions
 of the Bayesian network; upper-case $\P(\cdot)$ denotes joint or posterior quantities obtained by inference.
 
 % ----------------------------------------------------------------------------
@@ -69,7 +69,7 @@ distances are distinct.
 \problempart{3a}{Posterior for $K=2$, $T=1$}
 \question{Write $p(C_{11}=c_{11},C_{12}=c_{12}\mid\mathbf E_1=\mathbf e_1)$ in terms of the Gaussian pdf
 $p_{\mathcal N}(v;\mu,\sigma^2)$ and the priors $p(c_{11}),p(c_{12})$, without $D_{11},D_{12}$.
-(For $K=1$: $p(c_{11}\mid\mathbf e_1)\propto p(c_{11})\,p_{\mathcal N}(e_{11};\norm{a_1-c_{11}}_2,\sigma^2)$.)}
+(For $K=1$: $p(c_{11}\mid\mathbf e_1)\propto p(c_{11})\,p_{\mathcal N}(e_{11};\norm{a_1-c_{11}},\sigma^2)$.)}
 \expect{The expression (proportionality is fine) and the steps taken to derive it.}
 \begin{solution}
 \todo{answer}
