@@ -1,4 +1,4 @@
-# CS221 Mini Projects
+# CS221 Mini Projects: Group 13
 
 Group workspace for the seven mini projects based on the
 [Stanford CS221 Spring 2026 coursework](https://stanford-cs221.github.io/spring2026/#coursework).
@@ -40,7 +40,7 @@ Each member works on their own assignment section and the team **joins the work 
 1. making sure every `assignments/*/submission.py` is final and every `\todo` in `report/` is gone;
 2. running the whole notebook once (Kernel > Restart & Run All) and saving it;
 3. building the PDF;
-4. running `python scripts/package_submission.py --name <TeamName>_CS221_MiniProjects`, which writes
+4. running `python scripts/package_submission.py --name Group13_CS221_MiniProjects`, which writes
    `dist/CS221_Mini_Projects.ipynb` and `dist/CS221_Mini_Projects.pdf` (**the two files to upload**) plus a
    fallback zip with the helper code. The brief allows a zip only for teams that use helper files.
 
@@ -83,4 +83,4 @@ current state. The auxiliary files go to `report/build/`, which is git-ignored. 
 3. In the notebook, fill the **Approach** cell for each problem and run its experiment cells. Save figures to `report/figures/NN_name/`.
 4. Write the theory in `report/sections/NN_name.tex`, inside the `solution` environments. Search for `\todo` to find what is left.
 5. Keep team details identical in `report/team.tex` and the notebook's first table.
-6. Package: `python scripts/package_submission.py --name <TeamName>_CS221_MiniProjects` creates `dist/<name>.zip`.
+6. Package: `python scripts/package_submission.py --name Group13_CS221_MiniProjects` creates `dist/<name>.zip`.

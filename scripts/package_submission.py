@@ -38,7 +38,7 @@ def iter_files(base: Path):
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--name", default="CS221_MiniProjects", help="zip / top-level folder name")
+    parser.add_argument("--name", default="Group13_CS221_MiniProjects", help="zip / top-level folder name")
     parser.add_argument("--allow-missing-pdf", action="store_true", help="package even if the PDF is not built")
     args = parser.parse_args()
 
