@@ -21,7 +21,7 @@ LATEX = pdflatex -interaction=nonstopmode -halt-on-error -file-line-error -jobna
 
 help:
 	@echo make report        - build report/report.pdf
-	@echo make report-watch  - rebuild the PDF on every save (needs Perl)
+	@echo make report-watch  - rebuild the PDF on every save, needs Perl
 	@echo make report-clean  - remove LaTeX build files
 	@echo make notebook      - open the notebook in JupyterLab
 	@echo make test A=02_sentiment T=3a-0-basic - run a grader

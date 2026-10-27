@@ -75,7 +75,7 @@ Do these once per computer, in order. Open a **new** terminal after each install
 | 1 | **Git** | version control | <https://git-scm.com/download/win> |
 | 2 | **MiKTeX** | builds the PDF report | <https://miktex.org/download> (the "basic" installer is enough) |
 | 3 | **GNU Make** | the `make ...` commands | `winget install ezwinports.make` |
-| 4 | **Miniconda** | Python 3.12, which the graders expect | <https://docs.conda.io/en/latest/miniconda.html> |
+| 4 | **Miniconda** | Python 3.12, which the graders expect | `winget install Anaconda.Miniconda3`, then (new terminal) `~/miniconda3/Scripts/conda.exe init bash` in Git Bash, or `~\miniconda3\Scripts\conda.exe init powershell` in PowerShell |
 | 5 | Project environment | all Python packages + Jupyter kernel | `make env`, then `conda activate cs221` in every new terminal |
 
 After installing MiKTeX, allow it to download missing LaTeX packages automatically. Without this, the first
@@ -90,6 +90,10 @@ Check that everything is in place:
 ```powershell
 git --version; make --version; pdflatex --version; conda --version
 ```
+
+If a command reports **`command not found`** right after installing it, the terminal still has the old PATH.
+A terminal inside **VS Code** inherits VS Code's environment, so close **every** VS Code window and reopen it;
+opening a new terminal tab is not enough. Git Bash shows `UCRT64` in its prompt, which is normal.
 
 Notes:
 
