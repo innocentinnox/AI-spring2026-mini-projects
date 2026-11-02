@@ -12,6 +12,7 @@ numpy==1.26.4            # 04 MountainCar pins numpy 1.26.x; 1.26.4 has py3.12 w
 osmium                   # OpenStreetMap parsing (see assignments/03_route/README.md if it fails to build)
 plotly                   # visualization.py
 pandas                   # required by plotly express
+kaleido                  # static PNG export of the plotly maps for the report (scripts/route_figures.py)
 
 # --- 04 MountainCar (pins copied from assignments/04_mountaincar/requirements.txt) ---
 gym==0.26.2

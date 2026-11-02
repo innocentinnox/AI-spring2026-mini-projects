@@ -14,7 +14,20 @@ and explain what goes wrong if some $w_i$ are negative.}
 \expect{Expression for the minimising $\theta$ and its derivation; a short argument that it is a minimum;
 1--2 sentences on negative weights.}
 \begin{solution}
-\todo{answer}
+$f$ is differentiable, so any minimiser is a critical point:
+\[
+f'(\theta)=\sum_{i=1}^n 2w_i(\theta-x_i)=2\theta\sum_i w_i-2\sum_i w_ix_i=0
+\quad\Longrightarrow\quad
+\theta^\star=\frac{\sum_{i=1}^n w_i x_i}{\sum_{i=1}^n w_i},
+\]
+the weighted average of the positions. It is a minimum because
+$f''(\theta)=2\sum_i w_i>0$ (all $w_i>0$), so $f$ is strictly convex and its unique critical point is the
+global minimum. (Division by $\sum_i w_i$ is safe because the sum is positive.)
+
+If some $w_i$ are negative, two things can break: $\sum_i w_i$ may be $0$, so $\theta^\star$ is undefined,
+and if $\sum_i w_i<0$ then $f''<0$, so the critical point is a \emph{maximum} and $f(\theta)\to-\infty$ as
+$|\theta|\to\infty$, i.e.\ there is no minimum at all. Intuitively a negative weight ``rewards'' being far from
+$x_i$, so the problem is no longer about staying close to the points.
 \end{solution}
 
 \problempart{1b}{Swapping min and sum}
@@ -23,7 +36,20 @@ $g(\bvec x)=\sum_{i=1}^d\min_{s_i\in[-1,1]} s_i x_i$ for $\bvec x\in\R^d$.
 Which of $f\le g$, $f=g$, $f\ge g$ holds for all $\bvec x$? Prove it.}
 \expect{A short (3--5 line) proof using mathematical notation.}
 \begin{solution}
-\todo{answer}
+$f(\bvec x)\ge g(\bvec x)$ for all $\bvec x$.
+Write both as minimisations of the same quantity $\sum_i s_i x_i$:
+\[
+f(\bvec x)=\min_{\substack{s_1,\dots,s_d\in[-1,1]\\ s_1=s_2=\dots=s_d}}\ \sum_{i=1}^d s_i x_i,
+\qquad
+g(\bvec x)=\min_{s_1,\dots,s_d\in[-1,1]}\ \sum_{i=1}^d s_i x_i .
+\]
+$f$ minimises over the subset of $[-1,1]^d$ where all coefficients are equal, while $g$ minimises the same
+objective over the whole cube. Minimising over a larger set can only give a smaller (or equal) value, so
+$g(\bvec x)\le f(\bvec x)$.
+Concretely, $f(\bvec x)=-\bigl|\sum_i x_i\bigr|$ (take $s=-\operatorname{sign}\sum_i x_i$) and
+$g(\bvec x)=-\sum_i|x_i|$ (take $s_i=-\operatorname{sign}x_i$), and the triangle inequality
+$\bigl|\sum_i x_i\bigr|\le\sum_i|x_i|$ gives the same conclusion. The inequality is strict whenever the $x_i$ do
+not all have the same sign, e.g.\ $\bvec x=(1,-1)$: $f=0>g=-2$.
 \end{solution}
 
 \problempart{1c}{Expected points of a dice game}
@@ -31,7 +57,19 @@ Which of $f\le g$, $f=g$, $f\ge g$ holds for all $\bvec x$? Prove it.}
 points, and $2,4,5$ change nothing. What is the expected number of points at the end, as a function of $a,b$?}
 \expect{A recurrence for the value $V$, a short explanation of it, and the solved expression.}
 \begin{solution}
-\todo{answer}
+Let $V$ be the expected number of points collected from now until the game stops. Each roll is independent,
+so after any roll that does not stop the game we are in exactly the same situation and expect $V$ more points.
+Conditioning on the next roll:
+\[
+V=\underbrace{\tfrac16\cdot 0}_{\text{roll }1\text{: stop}}
+ +\underbrace{\tfrac16\,(a+V)}_{\text{roll }3}
+ +\underbrace{\tfrac16\,(-b+V)}_{\text{roll }6}
+ +\underbrace{\tfrac36\,V}_{\text{roll }2,4,5}
+ =\frac{a-b}{6}+\frac56 V .
+\]
+Solving, $\tfrac16 V=\tfrac{a-b}{6}$, hence $\boxed{V=a-b}$.
+(Sanity check: before the stopping $1$ appears, each of the other five faces is equally likely, so on
+average there is exactly one $3$ and one $6$.)
 \end{solution}
 
 \problempart{1d}{Maximum likelihood for a coin}
@@ -40,7 +78,16 @@ $L(p)=p^4(1-p)$. Which $p$ maximises $L$? Prove it is a maximum and give an intu
 \expect{The maximiser with its derivation (e.g.\ via $\log L$), proof that it is a maximum, and a
 1-sentence interpretation.}
 \begin{solution}
-\todo{answer}
+$\log$ is strictly increasing, so $L$ and $\ell(p)=\log L(p)=4\log p+\log(1-p)$ have the same maximiser.
+\[
+\ell'(p)=\frac4p-\frac1{1-p}=0\ \Longrightarrow\ 4(1-p)=p\ \Longrightarrow\ p^\star=\frac45 .
+\]
+It is a maximum: $\ell''(p)=-\dfrac4{p^2}-\dfrac1{(1-p)^2}<0$ for every $p\in(0,1)$, so $\ell$ is strictly
+concave and $p^\star$ is its unique global maximiser (equivalently, $L(p)>0$ on $(0,1)$ while
+$L(p)\to0$ at both ends, so the unique interior critical point must be the maximum).
+
+Interpretation: $p^\star=4/5$ is simply the empirical frequency of heads in the data (4 heads out of 5 flips);
+maximum likelihood says the most plausible coin is the one whose bias matches what we observed.
 \end{solution}
 
 \problempart{1e}{Conditional probability}
@@ -48,7 +95,18 @@ $L(p)=p^4(1-p)$. Which $p$ maximises $L$? Prove it is a maximum and give an intu
 Prove that $P(A)>\tfrac16$.}
 \expect{A short ($\sim$5 line) proof.}
 \begin{solution}
-\todo{answer}
+By the definition of conditional probability,
+$P(A\mid B)=\dfrac{P(A\cap B)}{P(B)}$ and $P(B\mid A)=\dfrac{P(A\cap B)}{P(A)}$.
+Setting them equal and using $P(A\cap B)>0$ (so we may divide by it) gives $P(A)=P(B)$.
+By inclusion--exclusion,
+\[
+\tfrac13=P(A\cup B)=P(A)+P(B)-P(A\cap B)=2P(A)-P(A\cap B),
+\]
+so
+\[
+P(A)=\frac{\tfrac13+P(A\cap B)}{2}>\frac{\tfrac13+0}{2}=\frac16 ,
+\]
+where the inequality is strict because $P(A\cap B)>0$.
 \end{solution}
 
 \problempart{1f}{Gradient}
@@ -60,7 +118,19 @@ f(\bvec w)=\Bigg(\sum_{i=1}^n\sum_{j=1}^n(\bvec a_i^\top\bvec w-\bvec b_j^\top\b
 Compute $\nabla f(\bvec w)$ (no summations over dimensions).}
 \expect{A compact expression for the gradient and its derivation ($\sim$5 lines).}
 \begin{solution}
-\todo{answer}
+Write each term as $(\bvec c_{ij}^\top\bvec w)^2$ with $\bvec c_{ij}=\bvec a_i-\bvec b_j$, since
+$\bvec a_i^\top\bvec w-\bvec b_j^\top\bvec w=(\bvec a_i-\bvec b_j)^\top\bvec w$.
+Two standard gradients: $\nabla_{\bvec w}(\bvec c^\top\bvec w)=\bvec c$ and
+$\nabla_{\bvec w}\tfrac12\norm{\bvec w}^2=\bvec w$. By the chain rule,
+$\nabla_{\bvec w}(\bvec c^\top\bvec w)^2=2(\bvec c^\top\bvec w)\,\bvec c$, so
+\[
+\nabla f(\bvec w)=2\sum_{i=1}^n\sum_{j=1}^n\bigl((\bvec a_i-\bvec b_j)^\top\bvec w\bigr)(\bvec a_i-\bvec b_j)
++\lambda\bvec w .
+\]
+Equivalently, with the $d\times d$ matrix $M=\sum_{i,j}(\bvec a_i-\bvec b_j)(\bvec a_i-\bvec b_j)^\top$,
+$f(\bvec w)=\bvec w^\top M\bvec w+\tfrac{\lambda}{2}\norm{\bvec w}^2$ and
+$\nabla f(\bvec w)=(2M+\lambda I)\,\bvec w$.
+For $d=1$ this reduces to $f'(w)=2\sum_{i,j}(a_i-b_j)^2w+\lambda w$, as expected.
 \end{solution}
 
 % ----------------------------------------------------------------------------
@@ -71,7 +141,12 @@ Compute $\nabla f(\bvec w)$ (no summations over dimensions).}
 whose corners are grid points (degenerate and overlapping rectangles allowed)? Answer as $O(n^c)$ or $O(c^n)$.}
 \expect{A big-O bound and $\sim$2 sentences of reasoning.}
 \begin{solution}
-\todo{answer}
+$O(n^{12})$. An axis-aligned rectangle is fully determined by the $x$-coordinates of its left and right
+sides and the $y$-coordinates of its bottom and top sides, each of which is one of $n$ grid values (repeats
+allowed, giving degenerate rectangles), so there are $\Theta(n^2)\cdot\Theta(n^2)=\Theta(n^4)$ rectangles.
+The three rectangles are placed independently and may coincide, so the number of placements is
+$\Theta(n^4)^3=\Theta(n^{12})$; whether the three are ordered or not only changes the constant ($3!$), not
+the exponent.
 \end{solution}
 
 \problempart{2b}{Minimum-cost monotone path}
@@ -80,14 +155,27 @@ cost $c(i,j)$ (possibly negative, $O(1)$ to evaluate), and a path's cost is the 
 Give the most efficient algorithm for the minimum path cost and its runtime.}
 \expect{Algorithm description ($\sim$5 sentences), the big-O runtime, and why.}
 \begin{solution}
-\todo{answer}
+Use dynamic programming. Let $C(i,j)$ be the minimum cost of a path from $(1,1)$ to $(i,j)$. Because every
+step goes down or right, $(i,j)$ can only be entered from $(i-1,j)$ or $(i,j-1)$, so
+\[
+C(1,1)=c(1,1),\qquad
+C(i,j)=c(i,j)+\min\bigl(C(i-1,j),\,C(i,j-1)\bigr),
+\]
+where a term with $i-1<1$ or $j-1<1$ is treated as $+\infty$ (so the first row and column just accumulate).
+Fill the table row by row (any order in which $(i-1,j)$ and $(i,j-1)$ are computed before $(i,j)$ works), and
+return $C(n,2n)$. Negative costs are not a problem: the move graph is acyclic, so no path can revisit a point
+and the recurrence remains valid.
+
+Runtime $O(n^2)$: there are $n\cdot 2n=2n^2$ cells and each costs $O(1)$ (one call to $c$ and one $\min$).
+This is optimal, since any correct algorithm must look at every $c(i,j)$ (each point lies on some path and a
+single very negative value could change the answer). Keeping only the previous row reduces memory to $O(n)$.
 \end{solution}
 
 % ----------------------------------------------------------------------------
 \subsection{Ethical issue spotting}
 
 For each scenario, either identify one concern from the NeurIPS Ethics Guidelines (General Ethical Conduct /
-Potential Negative Social Impacts), copy it out and \underline{underline} it, and justify it, or argue that
+Potential Negative Social Impacts), copy it out and \uline{underline} it, and justify it, or argue that
 there is no concern.
 
 \expect{A 2--5 sentence paragraph per scenario.}
@@ -96,28 +184,56 @@ there is no concern.
 \question{A loan-default model relies mainly on location, accepts urban and rejects rural applicants, and
 has a significantly higher false-positive rate for Black and male applicants.}
 \begin{solution}
-\todo{answer}
+This model raises a \emph{Discrimination / Bias and fairness} concern: it may
+\uline{encode, contain, or potentially exacerbate bias against people of a certain gender, race,
+sexuality, or who have other protected characteristics}. A higher false-positive rate for Black and male
+applicants means that creditworthy people in those groups are denied loans more often than equally creditworthy
+people elsewhere, which is a direct, material harm tied to protected characteristics. Relying mainly on
+location makes this worse: residence is strongly correlated with race in many countries (historical
+``redlining''), so location acts as a proxy that lets the model discriminate even without a race feature, and
+the systematic rejection of rural applicants adds a geographic form of exclusion that can entrench existing
+inequality in access to credit.
 \end{solution}
 
 \problempart{3b}{Stylometry}
 \question{Highly accurate ML stylometry predicts the authors of anonymous texts (including code) and could
 de-anonymise a wide range of writing.}
 \begin{solution}
-\todo{answer}
+The concern here is \emph{Surveillance}: the technique could be used to
+\uline{facilitate surveillance, profiling, or the de-anonymization of individuals}. Although the stated use
+is historical and literary scholarship, the same model applied to blog posts, forum comments or source code
+could unmask whistle-blowers, dissidents, journalists' sources or contributors to privacy-preserving software,
+and expose them to retaliation; anonymity is often the only protection such authors have. Because the
+capability is general and cheap to run at scale, the negative use is at least as likely as the benign one,
+so the researchers should discuss this dual use and consider mitigations (e.g.\ restricted release of models,
+research on authorship obfuscation as a countermeasure).
 \end{solution}
 
 \problempart{3c}{Celebrity face dataset}
 \question{Millions of celebrity faces were scraped from Google Images, without permission and including
 copyrighted images, to build facial recognition; copyrighted images are distributed as URLs plus bounding boxes.}
 \begin{solution}
-\todo{answer}
+This violates the data-related rules of General Ethical Conduct, in particular \emph{Consent}: datasets
+containing people \uline{should have been collected with the consent of the people depicted}, and the
+\emph{Copyright and Fair Use} requirement that researchers \uline{respect the copyright of the data}. The
+subjects never agreed to have their faces used to train a biometric system, and being famous does not waive
+that interest. Distributing URLs plus bounding boxes instead of the images is a technicality that makes the
+copyrighted data just as usable while avoiding responsibility for it. There is also a downstream
+\emph{Surveillance} concern, since facial recognition trained this way can be applied to anyone, not only to
+celebrities.
 \end{solution}
 
 \problempart{3d}{Plant-species identification}
 \question{A model identifies plant species from a photo. It was trained on iNaturalist photos whose users
 consented to research use, and it is only used inside the app.}
 \begin{solution}
-\todo{answer}
+We do not think this scenario raises an ethical concern under the guidelines. The data were contributed by users
+who explicitly \uline{consented to the use of their photos for research}, so the consent and privacy
+requirements are satisfied; the subjects are plants rather than people, so there is no protected-group bias to
+encode; and the deployment is narrow (identification inside the same app, at the user's request), which
+limits the risk of misuse or negative side effects. The only residual risk we see is indirect: precise
+photo locations of rare or protected species could help poachers, but that is a property of the public
+observation data and the app's location policy, not of the identification model itself.
 \end{solution}
 
 % ----------------------------------------------------------------------------
@@ -125,4 +241,5 @@ consented to research use, and it is only used inside the app.}
 \codepart{1.4a--1.4f}
 Functions: \texttt{find\_alphabetically\_first\_word}, \texttt{euclidean\_distance},
 \texttt{mutate\_sentences}, \texttt{sparse\_vector\_dot\_product}, \texttt{increment\_sparse\_vector},
-\texttt{find\_nonsingleton\_words}.
+\texttt{find\_nonsingleton\_words}. All six pass the local grader (8/8 points); the hidden tests run without
+errors or timeouts.

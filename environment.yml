@@ -1,10 +1,12 @@
-# One environment for all seven assignments.
-#   conda env create -f environment.yml
+# One environment for all seven assignments. Preferred: `make env` (see Makefile),
+# which only uses conda-forge. This file is the equivalent declarative form:
+#   conda env create -f environment.yml --override-channels -c conda-forge
 #   conda activate cs221
 #   python -m ipykernel install --user --name cs221 --display-name "Python 3.12 (cs221)"
 name: cs221
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   - python=3.12
   - pip

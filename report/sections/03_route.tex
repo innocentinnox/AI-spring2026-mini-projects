@@ -19,7 +19,18 @@ Infinite grid of integer locations $(x,y)$, with $m,n\ge0$:
 Is it unique?}
 \expect{An expression for the minimum cost; 1--2 sentences describing one optimal path and whether it is unique.}
 \begin{solution}
-\todo{answer}
+Minimum cost
+\[
+\boxed{\;n+\sum_{x=0}^{m-1}(1+x)=n+m+\frac{m(m-1)}{2}=n+\frac{m(m+1)}{2}\;}.
+\]
+Every path must contain at least $m$ east moves and $n$ north moves. A north (or any) move costs $1$ when
+taken at $x\le0$ and $1+x\ge2$ when taken at $x\ge1$, so all north moves should be made before leaving $x=0$;
+the $k$-th east move necessarily starts at $x=k-1$ and costs $1+(k-1)$. Detours (west, south, or extra
+east/west pairs) only add moves of cost $\ge1$, so they never help. One optimal path is therefore: $n$ steps
+north from $(0,0)$ to $(0,n)$, then $m$ steps east to $(m,n)$. It is unique whenever $m\ge1$ and $n\ge1$: any
+north move taken at $x\ge1$ costs at least $2$ instead of $1$, and moving to $x<0$ first costs two extra
+unit moves, so no other path attains the minimum. (If $m=0$ or $n=0$ the straight line is trivially the only
+optimum.)
 \end{solution}
 
 \problempart{1b}{UCS on this problem}
@@ -29,7 +40,19 @@ Is it unique?}
 (iii) UCS returns the minimum-cost path and explores only locations whose past cost is $\le$ the minimum cost to $(m,n)$.}
 \expect{T/F for each sub-part.}
 \begin{solution}
-(i) \todo{} \quad (ii) \todo{} \quad (iii) \todo{}
+\begin{description}[nosep]
+  \item[(i) False.] All costs are $\ge1$, so only finitely many locations have past cost at most the (finite)
+  optimal cost $C^\star$. UCS pops states in increasing order of past cost, so it reaches the goal and stops
+  after exploring finitely many states; an infinite state space is not a problem as long as positive costs
+  bound the number of states cheaper than the goal.
+  \item[(ii) False.] UCS explores every state whose past cost is below $C^\star$, and many of them lie outside
+  the rectangle: $(-1,0)$ has past cost $1$, $(0,n+1)$ has past cost $n+1\le C^\star$ (for $m\ge1$), and all
+  of $(-k,y)$ with $k+y<C^\star$ are explored too. UCS does return the minimum-cost path, but the second half
+  of the statement is wrong.
+  \item[(iii) True.] UCS pops states from the frontier in non-decreasing order of past cost and terminates when
+  it pops the goal (at past cost $C^\star$); hence every explored state has past cost $\le C^\star$, and the
+  returned path is optimal because all costs are non-negative.
+\end{description}
 \end{solution}
 
 \problempart{1c}{UCS on an arbitrary graph}
@@ -39,7 +62,18 @@ Is it unique?}
 (iii) Increasing every action's cost by 1 does not change the minimum-cost path, only its cost.}
 \expect{T/F for each sub-part.}
 \begin{solution}
-(i) \todo{} \quad (ii) \todo{} \quad (iii) \todo{}
+\begin{description}[nosep]
+  \item[(i) True.] Adding a connection only adds new paths; every path that existed before still exists with
+  the same cost, so the minimum over the (larger) set of paths cannot increase.
+  \item[(ii) False.] Two reasons. The cheap action may not lie on \emph{any} start--end path (e.g.\ an edge
+  into a dead end, or one pointing away from the goal that can only be followed by expensive moves back), so no
+  path containing it is ever returned. And if the cost is made negative, UCS is no longer correct at all: it
+  assumes non-negative costs, so it may return a path without the cheap edge even when a cheaper path using it
+  exists (or, with a negative cycle, there is no finite minimum).
+  \item[(iii) False.] Adding $1$ to every action penalises paths with more actions. Example: path $P_1$ has three
+  edges of cost $1$ (total $3$) and path $P_2$ one edge of cost $4$. Originally $P_1$ is optimal ($3<4$); after
+  the change $P_1$ costs $6$ and $P_2$ costs $5$, so the minimum-cost path switches to $P_2$.
+\end{description}
 \end{solution}
 
 % ----------------------------------------------------------------------------
@@ -56,11 +90,37 @@ visualise them. Give (i) a setting that gave new insight into travelling around 
 \expect{Screenshots of both visualisations; one or more sentences on something learned about travelling, and
 something incorrect about the map or the modelling assumptions.}
 \begin{solution}
-\todo{screenshots: figures/03\_route/2b\_*.png, plus discussion}
-% \begin{figure}[H]\centering
-%   \includegraphics[width=0.48\linewidth]{03_route/2b_insight.png}\hfill
-%   \includegraphics[width=0.48\linewidth]{03_route/2b_undesirable.png}
-%   \caption{...}\end{figure}
+Both routes were produced by \texttt{ShortestPathProblem} + UCS on the Stanford map and drawn with the
+provided \texttt{visualization.py} (exported to PNG by \texttt{scripts/route\_figures.py}). Red marker = start,
+green marker = end; blue dots are \texttt{amenity} locations and purple dots landmarks.
+\begin{figure}[H]\centering
+  \begin{subfigure}[t]{0.49\linewidth}\centering
+    \includegraphics[width=\linewidth]{03_route/2b_insight.png}
+    \caption{\texttt{landmark=gates} $\to$ \texttt{amenity=food}: 659\,m, 38 locations; ends at the Cantor Arts
+    Center caf\'e.}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.49\linewidth}\centering
+    \includegraphics[width=\linewidth]{03_route/2b_undesirable.png}
+    \caption{\texttt{landmark=hoover\_tower} $\to$ \texttt{amenity=food}: 447\,m walked to a caf\'e that is only
+    137\,m away in a straight line.}
+  \end{subfigure}
+  \caption{Problem 2b: shortest paths on the Stanford map.}
+\end{figure}
+\textbf{(i) New insight.} Our custom problem (\texttt{get\_stanford\_shortest\_path\_problem}) asks for the
+nearest place with food when leaving the Gates building. We expected Coupa Caf\'e at Green Library or
+Tresidder, but the search returns the caf\'e at the Cantor Arts Center, 659\,m away, which is closer than either
+(Tresidder is $>$700\,m). The system is useful precisely because the end is given as a \emph{tag} rather than a
+fixed destination: it searched all four food locations at once and found an option we would not have thought of.
+
+\textbf{(ii) Undesirable path.} From Hoover Tower the nearest food is Coupa Caf\'e at Green Library, 137\,m away
+as the crow flies, yet the minimum-cost path is 447\,m long (3.3$\times$ the straight-line distance) and loops
+around the surrounding buildings. This is a modelling problem, not a search problem: the map only contains the
+footpaths present in the OpenStreetMap extract (and filters out ways tagged as not walkable), so the direct
+paths across the Hoover courtyard and through the library arcade are simply missing, and every landmark is
+snapped to the nearest OSM node within 250\,m, which can put it on the ``wrong'' side of a building. A
+second, smaller issue is the tags themselves: Stanford Stadium is tagged \texttt{amenity=food} although its
+concessions only operate on game days, so a hungry person at the stadium would be told they have already
+arrived (a 0\,m path), and no tag carries opening hours or whether a place is indoors.
 \end{solution}
 
 \problempart{2c}{Negative externalities}
@@ -70,7 +130,19 @@ the effects on (1) users and (2) non-users, and ways to reduce the mismatch betw
 Externalities module).}
 \expect{3--5 sentences: two externalities (one for users, one for non-users) and at least one mitigation.}
 \begin{solution}
-\todo{answer}
+Our model treats each traveller in isolation on a static map, but in reality every routed person changes the
+conditions for everyone else. \emph{For users:} if a large fraction of people receive the same ``shortest''
+route, that route becomes congested, so the predicted travel time is wrong and users end up slower than the
+system promised (the ``selfish routing'' effect described in the articles, where individually optimal
+choices produce a collectively worse equilibrium). \emph{For non-users:} the shortest routes often cut through
+quiet residential streets, narrow campus paths or bike lanes, so residents, pedestrians and cyclists who never
+asked for the system absorb more traffic, noise, pollution and accident risk, while the costs of their roads
+being used are not counted anywhere in our objective. The root cause is the mismatch between the model
+(fixed edge costs, independent travellers) and the world (costs that depend on load and on externalities).
+Ways to reduce it: make edge costs depend on predicted load and update them from live data; add the social
+cost of a path (residential streets, school zones, emissions) to the cost function instead of only distance;
+and deliberately spread users over several near-optimal routes rather than sending everyone down the same
+one.
 \end{solution}
 
 % ----------------------------------------------------------------------------
@@ -84,7 +156,12 @@ Externalities module).}
 under a suitable state definition for 3a?}
 \expect{An expression in $n$ and $k$ with a brief justification.}
 \begin{solution}
-\todo{answer}
+At most $\boxed{n\cdot 2^{k}}$ states. Our state is (current location, set of waypoint tags covered so far).
+The location takes one of $n$ values and the covered set is one of the $2^k$ subsets of the $k$ waypoint
+tags, so there are $n\cdot2^k$ distinct states and UCS can visit each at most once. Nothing else about the
+past (the exact locations visited, their order, the distance travelled) affects which future paths are
+feasible or their costs, so this is the smallest sufficient memory; in practice far fewer states are reached,
+because tags are only picked up at the few locations that carry them.
 \end{solution}
 
 \problempart{3c}{Stanford waypoints experiment}
@@ -93,7 +170,23 @@ under a suitable state definition for 3a?}
 interesting about it? Does it match your expectations, and what important factors does it fail to capture?}
 \expect{A screenshot, the list of waypoint tags, and one or more sentences of discussion.}
 \begin{solution}
-\todo{screenshot figures/03\_route/3c\_*.png, tags used, discussion}
+Our custom problem (\texttt{get\_stanford\_waypoints\_shortest\_path\_problem}) is an end-of-day errand run:
+start at the Rains graduate housing, cover the waypoint tags
+\texttt{amenity=food}, \texttt{landmark=bookstore} and \texttt{landmark=green\_library} in any order, and end
+at \texttt{landmark=gates}.
+\begin{figure}[H]\centering
+  \includegraphics[width=0.85\linewidth]{03_route/3c_waypoints.png}
+  \caption{Problem 3c: Rains $\to$ \{food, bookstore, Green Library\} $\to$ Gates. Total length 2\,256\,m over
+  160 locations; UCS explored 22\,557 states (vs.\ $\approx$2\,000 for the plain shortest-path queries above).}
+\end{figure}
+The solver chose the order Rains $\to$ Bookstore $\to$ Green Library $\to$ Gates, 2\,256\,m in total, and it
+satisfied the food requirement ``for free'': Coupa Caf\'e sits at the same map node as Green Library, so one
+location covers two tags and no detour to Tresidder or the Cantor caf\'e is needed. That is exactly the kind of
+shortcut the unordered-waypoint formulation is meant to discover, and it matches what a person who knows the
+campus would do. Two things the path fails to capture: it treats the Green Library node as ``food'' even though
+Coupa's opening hours or a long queue might make Tresidder the better stop, and it minimises distance only,
+ignoring that the Bookstore closes early, so a feasible plan at 20:00 would have to be a different, longer
+tour. The state space also grew by a factor of about $2^k=8$, as predicted in 3b.
 \end{solution}
 
 \problempart{3d}{Ride-sharing and dual use}
@@ -105,7 +198,20 @@ feature to raise profits at the expense of driver health, or what are the downsi
 \emph{driver identity} (not trip attributes such as time of day) that informs the choice; (c) a harmful use or a
 downside of the data collection.}
 \begin{solution}
-\todo{answer}
+\textbf{(a) Waypoints that help drivers.} Between a drop-off and the next pick-up the dispatcher could route
+the driver through waypoints such as a rest area or caf\'e with parking (\texttt{amenity=cafe},
+\texttt{amenity=toilets}), a fuel or charging station when the tank or battery is low, a place of worship at
+prayer times, or simply a quiet spot to take a legally required break; because the waypoints are unordered,
+the driver still gets the shortest tour that covers them before arriving at the next rider.
+\textbf{(b) Driver information needed.} Choosing appropriate waypoints requires information about the driver
+as a person, not about the trip: e.g.\ religion (prayer times and places), dietary needs (halal, vegetarian
+food stops), disability or health conditions (accessible toilets, medication breaks), and preferences about
+when and how often they rest. \textbf{(c) Dual use.} The same feature lets a company maximise profit at the
+driver's expense: it can insert waypoints that are good for the business (surge-pricing zones, partner petrol
+stations, areas where the next pick-up is likely) and keep the driver in constant motion, turning the
+``break'' feature into forward dispatch under another name; and collecting religion, health and routine data
+creates a sensitive profile that can leak, be sold, or be used to discriminate (e.g.\ assigning fewer rides to
+drivers who take breaks), so drivers may reasonably refuse to share it.
 \end{solution}
 
 % ----------------------------------------------------------------------------

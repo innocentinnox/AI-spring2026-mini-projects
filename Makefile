@@ -46,6 +46,9 @@ test:
 package: report
 	$(PYTHON) scripts/package_submission.py --name Group13_CS221_MiniProjects
 
+# conda-forge only (--override-channels): Anaconda's default channels require
+# accepting their Terms of Service, and we do not need them.
 env:
-	conda env create -f environment.yml
+	conda create -n cs221 --override-channels -c conda-forge python=3.12 pip -y
+	conda run -n cs221 python -m pip install -r requirements.txt
 	conda run -n cs221 python -m ipykernel install --user --name cs221 --display-name "Python 3.12 (cs221)"

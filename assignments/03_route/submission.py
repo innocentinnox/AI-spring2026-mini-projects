@@ -36,23 +36,30 @@ class ShortestPathProblem(SearchProblem):
 
     def start_state(self) -> State:
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # No waypoints to remember here, so the state is just where we are.
+        return State(location=self.start_location)
         # END_YOUR_CODE
 
     def is_end(self, state: State) -> bool:
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # Any location carrying the end tag is an acceptable destination.
+        return self.end_tag in self.city_map.tags[state.location]
         # END_YOUR_CODE
 
     def action_successors_and_costs(self, state: State) -> List[Tuple[str, State, float]]:
         """
         Note we want to return a list of *3-tuples* of the form:
             (actionToReachSuccessor: str, successorState: State, cost: float)
-        Our action space is the set of all named locations, where a named location 
+        Our action space is the set of all named locations, where a named location
         string represents a transition from the current location to that new location.
         """
         # BEGIN_YOUR_CODE (our solution is 7 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # city_map.distances[loc] maps each neighbouring location to the length of
+        # the connection in metres; the action is simply the neighbour's label.
+        return [
+            (neighbor, State(location=neighbor), distance)
+            for neighbor, distance in self.city_map.distances[state.location].items()
+        ]
         # END_YOUR_CODE
 
 
@@ -75,7 +82,10 @@ def get_stanford_shortest_path_problem() -> ShortestPathProblem:
     city_map = create_stanford_map()
 
     # BEGIN_YOUR_CODE (our solution is 2 lines of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    # "I am at the Gates building and hungry: where is the nearest place with food?"
+    # Several landmarks carry amenity=food, so the search picks the closest one.
+    start_location = location_from_tag(make_tag("landmark", "gates"), city_map)
+    end_tag = make_tag("amenity", "food")
     # END_YOUR_CODE
     return ShortestPathProblem(start_location, end_tag, city_map)
 
@@ -105,19 +115,39 @@ class WaypointsShortestPathProblem(SearchProblem):
         # We want waypoint_tags to be consistent/canonical (sorted) and hashable (tuple)
         self.waypoint_tags = tuple(sorted(waypoint_tags))
 
+    # State design: `memory` is the sorted tuple of waypoint tags covered so far.
+    # Which locations were visited, and in which order, is irrelevant to the
+    # future, so the state space is only (#locations) x 2^(#waypoints) instead of
+    # growing with the length of the path.
+
+    def _waypoints_at(self, location: str) -> frozenset:
+        """The subset of the waypoint tags that `location` carries."""
+        return frozenset(self.waypoint_tags).intersection(self.city_map.tags[location])
+
     def start_state(self) -> State:
         # BEGIN_YOUR_CODE (our solution is 6 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # Tags at the start location already count as covered.
+        covered = tuple(sorted(self._waypoints_at(self.start_location)))
+        return State(location=self.start_location, memory=covered)
         # END_YOUR_CODE
 
     def is_end(self, state: State) -> bool:
         # BEGIN_YOUR_CODE (our solution is 5 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # Done when we stand on an end-tag location AND every waypoint is covered
+        # (both tuples are sorted, so equality is a set comparison).
+        return (self.end_tag in self.city_map.tags[state.location]
+                and state.memory == self.waypoint_tags)
         # END_YOUR_CODE
 
     def action_successors_and_costs(self, state: State) -> List[Tuple[str, State, float]]:
         # BEGIN_YOUR_CODE (our solution is 17 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        covered = set(state.memory)
+        successors = []
+        for neighbor, distance in self.city_map.distances[state.location].items():
+            # Moving to `neighbor` additionally covers whatever waypoint tags it has.
+            new_covered = tuple(sorted(covered | self._waypoints_at(neighbor)))
+            successors.append((neighbor, State(location=neighbor, memory=new_covered), distance))
+        return successors
         # END_YOUR_CODE
 
 
@@ -135,7 +165,16 @@ def get_stanford_waypoints_shortest_path_problem() -> WaypointsShortestPathProbl
     """
     city_map = create_stanford_map()
     # BEGIN_YOUR_CODE (our solution is 4 lines of code, but don't worry if you deviate from this)
-    raise Exception("Not implemented yet")
+    # An end-of-day errand run: leave the Rains dorm, grab food somewhere, buy
+    # notebooks at the bookstore and return a book to Green Library (in any
+    # order), then end the day at the Gates building.
+    start_location = location_from_tag(make_tag("landmark", "rains"), city_map)
+    waypoint_tags = [
+        make_tag("amenity", "food"),
+        make_tag("landmark", "bookstore"),
+        make_tag("landmark", "green_library"),
+    ]
+    end_tag = make_tag("landmark", "gates")
     # END_YOUR_CODE
     return WaypointsShortestPathProblem(start_location, waypoint_tags, end_tag, city_map)
 
@@ -156,19 +195,29 @@ def get_stanford_waypoints_shortest_path_problem() -> WaypointsShortestPathProbl
 
 def a_star_reduction(problem: SearchProblem, heuristic: Heuristic) -> SearchProblem:
     class NewSearchProblem(SearchProblem):
+        # A* = UCS on the same graph with the reduced cost
+        #     cost'(s, a) = cost(s, a) + h(Succ(s, a)) - h(s).
+        # Along any path the h terms telescope to h(end) - h(start), a constant,
+        # so the cheapest path is unchanged while UCS is steered towards states
+        # with small h. States and goals are exactly those of the original problem.
+
         def start_state(self) -> State:
             # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-            raise Exception("Not implemented yet")
+            return problem.start_state()
             # END_YOUR_CODE
 
         def is_end(self, state: State) -> bool:
             # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-            raise Exception("Not implemented yet")
+            return problem.is_end(state)
             # END_YOUR_CODE
 
         def action_successors_and_costs(self, state: State) -> List[Tuple[str, State, float]]:
             # BEGIN_YOUR_CODE (our solution is 8 lines of code, but don't worry if you deviate from this)
-            raise Exception("Not implemented yet")
+            h_here = heuristic.evaluate(state)
+            return [
+                (action, successor, cost + heuristic.evaluate(successor) - h_here)
+                for action, successor, cost in problem.action_successors_and_costs(state)
+            ]
             # END_YOUR_CODE
 
     return NewSearchProblem()
@@ -189,12 +238,25 @@ class StraightLineHeuristic(Heuristic):
 
         # Precompute
         # BEGIN_YOUR_CODE (our solution is 5 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # Collect the coordinates of every possible destination once, so that
+        # evaluating the heuristic is just a min over a short list.
+        self.end_geo_locations = [
+            city_map.geo_locations[location]
+            for location, tags in city_map.tags.items()
+            if end_tag in tags
+        ]
         # END_YOUR_CODE
 
     def evaluate(self, state: State) -> float:
         # BEGIN_YOUR_CODE (our solution is 6 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # Straight-line (great-circle) distance to the nearest end location. It
+        # never exceeds the walking distance, so the heuristic is admissible, and
+        # it is consistent because straight-line distance obeys the triangle
+        # inequality.
+        current = self.city_map.geo_locations[state.location]
+        if not self.end_geo_locations:
+            return 0.0
+        return min(compute_distance(current, end) for end in self.end_geo_locations)
         # END_YOUR_CODE
 
 
@@ -221,28 +283,37 @@ class NoWaypointsHeuristic(Heuristic):
                 Return special "END" state
                 """
                 # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-                raise Exception("Not implemented yet")
+                return State(location=END)
                 # END_YOUR_CODE
 
             def is_end(self, state: State) -> bool:
                 """
                 Return False for each state.
-                Because there is *not* a valid end state (`is_end` always returns False), 
+                Because there is *not* a valid end state (`is_end` always returns False),
                 UCS will exhaustively compute costs to *all* other states.
                 """
                 # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-                raise Exception("Not implemented yet")
+                return False
                 # END_YOUR_CODE
 
             def action_successors_and_costs(
                 self, state: State
             ) -> List[Tuple[str, State, float]]:
-                # If current location is the special "END" state, 
-                # return all the locations with the desired end_tag and cost 0 
+                # If current location is the special "END" state,
+                # return all the locations with the desired end_tag and cost 0
                 # (i.e, we connect the special location "END" with cost 0 to all locations with end_tag)
                 # Else, return all the successors of current location and their corresponding distances according to the city_map
                 # BEGIN_YOUR_CODE (our solution is 14 lines of code, but don't worry if you deviate from this)
-                raise Exception("Not implemented yet")
+                if state.location == END:
+                    return [
+                        (location, State(location=location), 0.0)
+                        for location, tags in city_map.tags.items()
+                        if end_tag in tags
+                    ]
+                return [
+                    (neighbor, State(location=neighbor), distance)
+                    for neighbor, distance in city_map.distances[state.location].items()
+                ]
                 # END_YOUR_CODE
 
         # Call UCS.solve on our `ReverseShortestPathProblem` instance. Because there is
@@ -250,7 +321,11 @@ class NoWaypointsHeuristic(Heuristic):
         # compute costs to *all* other states.
 
         # BEGIN_YOUR_CODE (our solution is 2 lines of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # A label that cannot clash with a real location (real labels are OSM ids
+        # or "x,y" grid labels).
+        END = "__END__"
+        ucs = UniformCostSearch(verbose=0)
+        ucs.solve(ReverseShortestPathProblem())
         # END_YOUR_CODE
 
         # Now that we've exhaustively computed costs from any valid "end" location
@@ -259,10 +334,14 @@ class NoWaypointsHeuristic(Heuristic):
         #   > Note that we're making a critical assumption here: costs are symmetric!
 
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # past_costs[location] = exact shortest walking distance from `location`
+        # to the nearest end-tag location (distances are symmetric).
+        self.past_costs = ucs.past_costs
         # END_YOUR_CODE
 
     def evaluate(self, state: State) -> float:
         # BEGIN_YOUR_CODE (our solution is 1 line of code, but don't worry if you deviate from this)
-        raise Exception("Not implemented yet")
+        # Waypoints are ignored, so this is a lower bound on the remaining cost;
+        # a location that cannot reach any end location gets an infinite estimate.
+        return self.past_costs.get(state.location, float("inf"))
         # END_YOUR_CODE

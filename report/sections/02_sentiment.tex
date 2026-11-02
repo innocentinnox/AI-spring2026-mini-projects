@@ -17,7 +17,26 @@ $\text{Loss}_{\text{hinge}}(x,y,\bvec w)=\max\{0,\,1-\bvec w\cdot\phi(x)\,y\}$.
 (\emph{pretty, good, bad, plot, not, scenery}).}
 \expect{The weight vector in that order, e.g.\ $[0.1,0.2,0.3,0.4,0.5,0.6]$.}
 \begin{solution}
-\todo{show each update, then the final vector}
+The hinge loss has gradient $\nabla_{\bvec w}\text{Loss}=-y\,\phi(x)$ when the margin
+$\bvec w\cdot\phi(x)\,y<1$ and $0$ otherwise, so each SGD step is
+$\bvec w\leftarrow\bvec w+\eta\,y\,\phi(x)$ \emph{if} the margin is below 1, and no change otherwise.
+Weights are listed in the order (pretty, good, bad, plot, not, scenery).
+\begin{center}\small
+\begin{tabular}{clccl}
+\toprule
+step & review ($y$) & margin & update & weights after the step \\
+\midrule
+0 & --- & --- & --- & $[0,\ 0,\ 0,\ 0,\ 0,\ 0]$ \\
+1 & not good ($-1$) & $0<1$ & $\bvec w\mathrel{-}=0.1\,\phi$ & $[0,\ -0.1,\ 0,\ 0,\ -0.1,\ 0]$ \\
+2 & pretty bad ($-1$) & $0<1$ & $\bvec w\mathrel{-}=0.1\,\phi$ & $[-0.1,\ -0.1,\ -0.1,\ 0,\ -0.1,\ 0]$ \\
+3 & good plot ($+1$) & $-0.1<1$ & $\bvec w\mathrel{+}=0.1\,\phi$ & $[-0.1,\ 0,\ -0.1,\ 0.1,\ -0.1,\ 0]$ \\
+4 & pretty scenery ($+1$) & $-0.1<1$ & $\bvec w\mathrel{+}=0.1\,\phi$ & $[0,\ 0,\ -0.1,\ 0.1,\ -0.1,\ 0.1]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+(Margins: steps 1--2 have $\bvec w\cdot\phi=0$ because no word has been seen yet; in steps 3--4
+$\bvec w\cdot\phi=-0.1+0$ since \emph{good} and \emph{pretty} carry $-0.1$ and the other word is new.)
+Final weights: $\boxed{[\,0,\ 0,\ -0.1,\ 0.1,\ -0.1,\ 0.1\,]}$ for (pretty, good, bad, plot, not, scenery).
 \end{solution}
 
 \problempart{1b}{A non-separable dataset}
@@ -26,7 +45,21 @@ Prove that no linear classifier $f_{\bvec w}(x)=\sign(\bvec w\cdot\phi(x))$ on w
 zero error, then propose one extra feature that fixes this.}
 \expect{A short proof ($\sim$3--5 sentences) and a viable additional feature.}
 \begin{solution}
-\todo{answer}
+\textbf{Proof.} With word-count features the four scores are
+$s_1=w_{\text{bad}}$, $s_2=w_{\text{good}}$, $s_3=w_{\text{not}}+w_{\text{bad}}$ and
+$s_4=w_{\text{not}}+w_{\text{good}}$. Zero error needs $s_2,s_3$ to have the sign of $+1$ and $s_1,s_4$
+the sign of $-1$, so in particular $s_2+s_3>s_1+s_4$ (the left side is the sum of two scores classified
+positive, the right side of two scores classified negative, and with any convention for $\sign(0)$ the two
+sides cannot be equal while being classified differently). But
+$s_2+s_3=w_{\text{good}}+w_{\text{not}}+w_{\text{bad}}=s_1+s_4$, a contradiction. Hence no weight vector
+separates the data: the effect of ``not'' is additive in a linear model, so it must push both reviews in the
+same direction, whereas the data require it to flip the sentiment.
+
+\textbf{Fix.} Add one feature that lets the model see the interaction, e.g.\ the bigram indicator
+$\phi_{\text{not bad}}(x)=\indic{\text{``not bad'' occurs in }x}$. Then, for instance,
+$w_{\text{bad}}=-1$, $w_{\text{good}}=1$, $w_{\text{not}}=-2$, $w_{\text{not bad}}=4$ gives scores
+$-1,\ 1,\ -1-2+4=1,\ 1-2=-1$, which classifies all four reviews correctly. (Any ``not $X$'' bigram feature,
+or a feature for a negation word immediately preceding a sentiment word, works the same way.)
 \end{solution}
 
 % ----------------------------------------------------------------------------
@@ -39,14 +72,21 @@ Predictor $\sigma(\bvec w\cdot\phi(x))$ with $\sigma(z)=(1+e^{-z})^{-1}$, rating
 \question{Write $\text{Loss}(x,y,\bvec w)$ for squared loss on a single data point.}
 \expect{A mathematical expression (may use $\sigma$).}
 \begin{solution}
-\todo{answer}
+\[
+\text{Loss}(x,y,\bvec w)=\bigl(\sigma(\bvec w\cdot\phi(x))-y\bigr)^2 .
+\]
 \end{solution}
 
 \problempart{2b}{Its gradient}
 \question{Compute $\nabla_{\bvec w}\text{Loss}(x,y,\bvec w)$ in terms of $p=\sigma(\bvec w\cdot\phi(x))$.}
 \expect{A mathematical expression for the gradient.}
 \begin{solution}
-\todo{answer}
+The logistic function satisfies $\sigma'(z)=\sigma(z)\bigl(1-\sigma(z)\bigr)$. With $p=\sigma(\bvec w\cdot\phi(x))$
+and the chain rule ($\nabla_{\bvec w}(\bvec w\cdot\phi(x))=\phi(x)$):
+\[
+\nabla_{\bvec w}\text{Loss}(x,y,\bvec w)=2\,(p-y)\cdot\sigma'(\bvec w\cdot\phi(x))\cdot\phi(x)
+=2\,(p-y)\,p\,(1-p)\,\phi(x).
+\]
 \end{solution}
 
 \problempart{2c}{Vanishing gradients}
@@ -54,14 +94,25 @@ Predictor $\sigma(\bvec w\cdot\phi(x))$ with $\sigma(z)=(1+e^{-z})^{-1}$, rating
 become arbitrarily small? Can it be exactly zero ($\norm{\bvec w}$ large but finite)?}
 \expect{1--2 sentences on the conditions; 1--2 sentences on whether it can be exactly zero.}
 \begin{solution}
-\todo{answer}
+With $y=1$ the gradient is $-2\,(1-p)^2\,p\,\phi(x)$, whose magnitude $2(1-p)^2p\,\norm{\phi(x)}$ goes to $0$
+when $p\to1$, i.e.\ when $\bvec w\cdot\phi(x)\to+\infty$ (take $\bvec w=c\,\phi(x)$ with $c\to\infty$: the
+prediction is correct and very confident), \emph{and also} when $p\to0$, i.e.\ $\bvec w\cdot\phi(x)\to-\infty$
+(the prediction is confidently \emph{wrong}; this is the vanishing-gradient trap, because the loss is near
+its maximum $1$ yet gradient descent barely moves).
+
+It can never be exactly zero for finite $\bvec w$ (assuming $\phi(x)\neq\bvec 0$): $\sigma$ takes values
+strictly inside $(0,1)$, so $p\in(0,1)$ and $(1-p)^2p>0$. The gradient is only zero in the limit
+$\norm{\bvec w}\to\infty$ (or trivially if $\phi(x)=\bvec 0$).
 \end{solution}
 
 % ----------------------------------------------------------------------------
 \subsection{Sentiment classification}
 \codepart{2.3a--2.3d}
-\texttt{extract\_word\_features}, \texttt{learn\_predictor} (SGD on hinge loss; train error $<4\%$, validation
-error $<30\%$), \texttt{generate\_dataset}, \texttt{extract\_character\_features}.
+\texttt{extract\_word\_features}, \texttt{learn\_predictor} (SGD on hinge loss), \texttt{generate\_dataset},
+\texttt{extract\_character\_features}. With word features, 20 epochs and $\eta=0.01$ the learned predictor
+reaches a train error of $2.76\%$ and a validation error of $27.35\%$ (targets: $<4\%$ and $<30\%$). All local
+tests pass (9/9 points). (All numbers in this section were produced with Python 3.12, the graders' version;
+Python 3.11 gives slightly different values because 3.12 changed how \texttt{sum()} rounds floats.)
 
 \problempart{3e}{Character $n$-grams}
 \question{Run the linear predictor with \texttt{extract\_character\_features} for several $n$. Which $n$
@@ -69,7 +120,43 @@ gives the smallest validation error, and why is it nearly as good as word featur
 review for which character $n$-grams probably beat word features, and explain why.}
 \expect{A paragraph ($\sim$4--6 sentences) with the best $n$ and the reason; a one-sentence review with an explanation.}
 \begin{solution}
-\todo{table of validation error vs.\ $n$ (from notebook \S2.3e) and discussion}
+We trained with the same settings as 3b (20 epochs, $\eta=0.01$) for $n=1,\dots,10$ (notebook \S2.3e):
+\begin{center}
+\begin{tabular}{rrrr}
+\toprule
+$n$ & train error & validation error & \# features \\
+\midrule
+1 & 0.4572 & 0.4789 & 76 \\
+2 & 0.2839 & 0.3953 & 1\,465 \\
+3 & 0.0025 & 0.3210 & 10\,814 \\
+4 & 0.0000 & 0.2839 & 46\,541 \\
+5 & 0.0000 & 0.2724 & 107\,308 \\
+6 & 0.0000 & 0.2735 & 166\,482 \\
+\textbf{7} & 0.0003 & \textbf{0.2712} & 212\,442 \\
+8 & 0.0006 & 0.2932 & 243\,425 \\
+9 & 0.0008 & 0.3092 & 261\,895 \\
+10 & 0.0008 & 0.3376 & 273\,322 \\
+\midrule
+words & 0.0276 & 0.2735 & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+The smallest validation error, $27.12\%$, is obtained with $n=7$, marginally better than word features
+($27.35\%$); $n=5$--$7$ are all within a quarter of a percentage point of each other. This is the regime in which an $n$-gram is
+about the length of an English word, so most $n$-grams are essentially a word stem together with a piece of
+its neighbours: the features carry the same sentiment information as words (``awful'', ``superb''), while
+also sharing evidence between inflections and derivations (\emph{bore}/\emph{boring}/\emph{bored}) and
+capturing short word-boundary contexts such as \emph{notgoo}. Very small $n$ performs poorly because 1- and
+2-grams are shared by almost every word and carry little meaning; very large $n$ overfits, because each
+feature is nearly a unique word pair that rarely reappears in the validation set (train error is $\approx0$
+from $n=4$ on while validation error grows for $n\ge8$).
+
+\emph{Example review:} ``\emph{Dissapointing, unwatchable and laughably overacted.}''
+Character $n$-grams probably beat word features here: the misspelt \emph{dissapointing} and the rare
+derived words \emph{unwatchable}, \emph{laughably}, \emph{overacted} are unlikely to appear verbatim in the
+training vocabulary, so a word model has weight 0 for them, whereas their $n$-grams
+(\emph{appoint}, \emph{watch}, \emph{laugh}, \emph{overact}) overlap with $n$-grams of common negative words
+seen in training.
 \end{solution}
 
 % ----------------------------------------------------------------------------
@@ -98,24 +185,33 @@ Classifier D: $\bvec w=[-0.1,1,0]$\quad Classifier T: $\bvec w=[-0.1,0,1]$
 \question{Describe in words how each classifier behaves.}
 \expect{For each classifier, an ``if and only if'' statement for when $f_{\bvec w}(x)=1$.}
 \begin{solution}
-\todo{answer}
+\textbf{Classifier D:} $\bvec w\cdot\phi(x)=-0.1+d$, which is positive exactly when $d=1$. So
+$f_D(x)=1$ \emph{if and only if} the comment mentions a demographic identity ($d=1$): D flags every comment
+that mentions an identity as toxic and nothing else, ignoring the actual words used.
+
+\textbf{Classifier T:} $\bvec w\cdot\phi(x)=-0.1+t$, so $f_T(x)=1$ \emph{if and only if} the comment contains a
+toxic word ($t=1$): T flags exactly the comments with toxic vocabulary, ignoring identity mentions.
+(The bias $-0.1$ only ensures the score is never exactly $0$.)
 \end{solution}
 
 \problempart{4b}{Losses of classifier D}
 \question{Compute D's average loss, its per-group losses, and its maximum group loss.}
 \expect{The average loss, the completed table below, and the maximum group loss.}
 \begin{solution}
+D predicts $y=1$ iff $d=1$, so it is wrong on every example with $y\neq(2d-1)$: the non-toxic comments with
+identity mentions ($y=-1,d=1$: $7+3=10$) and the toxic comments without them ($y=1,d=0$: $3+7=10$).
 \begin{center}
 \begin{tabular}{lcc}
 \toprule
  & $y=1$ & $y=-1$\\
 \midrule
-$d=1$ & \todo{} & \todo{}\\
-$d=0$ & \todo{} & \todo{}\\
+$d=1$ & $0/90=0$ & $10/10=1$\\
+$d=0$ & $10/10=1$ & $0/90=0$\\
 \bottomrule
 \end{tabular}
 \end{center}
-Average loss: \todo{}. Maximum group loss: \todo{}.
+Average loss: $\TrainLossAvg(D)=\dfrac{10+10}{200}=0.1$. \quad Maximum group loss: $\TrainLossMax(D)=1.0$
+(two whole groups, the minority groups, are misclassified completely).
 \end{solution}
 
 \problempart{4c}{Losses of classifier T; comparison}
@@ -123,17 +219,23 @@ Average loss: \todo{}. Maximum group loss: \todo{}.
 has the lower maximum group loss?}
 \expect{The average loss, completed table, and maximum group loss, plus both comparisons.}
 \begin{solution}
+T predicts $y=1$ iff $t=1$; within every $(y,d)$ group exactly $30\%$ of the points have the ``wrong'' $t$.
 \begin{center}
 \begin{tabular}{lcc}
 \toprule
  & $y=1$ & $y=-1$\\
 \midrule
-$d=1$ & \todo{} & \todo{}\\
-$d=0$ & \todo{} & \todo{}\\
+$d=1$ & $27/90=0.3$ & $3/10=0.3$\\
+$d=0$ & $3/10=0.3$ & $27/90=0.3$\\
 \bottomrule
 \end{tabular}
 \end{center}
-Average loss: \todo{}. Maximum group loss: \todo{}. Comparison: \todo{}.
+Average loss: $\TrainLossAvg(T)=\dfrac{27+3+3+27}{200}=0.3$. \quad Maximum group loss: $\TrainLossMax(T)=0.3$.
+
+Comparison: \textbf{D has the lower average loss} ($0.1<0.3$) because it exploits the spurious
+identity--toxicity correlation that holds for $90\%$ of the data, but \textbf{T has the lower maximum group
+loss} ($0.3<1.0$) because its errors are spread evenly across groups instead of falling entirely on the two
+minority groups.
 \end{solution}
 
 \problempart{4d}{Fairness and the mixed objective}
@@ -141,15 +243,42 @@ Average loss: \todo{}. Maximum group loss: \todo{}. Comparison: \todo{}.
 $\lambda\in[0,1]$. Use the ethical frameworks from the \emph{Algorithms and Distribution} module.}
 \begin{enumerate}[label=(\roman*)]
   \item $\lambda=1$: describe the optimal classifier and the framework it aligns with. \expect{1--2 sentences, justified by the framework.}
-  \begin{solution}\todo{answer}\end{solution}
+  \begin{solution}
+  With $\lambda=1$ the objective is the plain average loss, so the optimal classifier is the one that makes
+  the fewest mistakes overall regardless of who bears them, here D-like behaviour (loss $0.1$). This is the
+  \emph{utilitarian} principle: maximise aggregate welfare (total number of correctly treated commenters), even
+  though it leaves the minority groups ($y=-1,d=1$ and $y=1,d=0$) completely misclassified.
+  \end{solution}
   \item $\lambda=0$: same question. \expect{1--2 sentences, justified by the framework.}
-  \begin{solution}\todo{answer}\end{solution}
+  \begin{solution}
+  With $\lambda=0$ only the worst-off group matters, so the optimal classifier equalises and minimises the
+  largest group loss, here T (every group at $0.3$). This is the \emph{Rawlsian maximin} (difference)
+  principle: judge a rule by how it treats the least-advantaged group and accept a lower average to improve
+  their outcome.
+  \end{solution}
   \item $\lambda=0$ with a new training set in which group $(y=1,d=1)$ has size 1 (the other groups have
         65, 65, 69). How would you factor group size into $\TrainLossMax$? \expect{The adjustment, justified in 1--2 sentences.}
-  \begin{solution}\todo{answer}\end{solution}
+  \begin{solution}
+  Weight each group's loss by how reliably it can be estimated, e.g.\ discount groups below a minimum size
+  $m$:
+  $\TrainLossMax'(\bvec w)=\max_g \min\!\bigl(1,\tfrac{|D_{\text{train}}(g)|}{m}\bigr)\,\TrainLossG(\bvec w)$
+  (or equivalently add pseudo-counts to each group's error rate). A single example gives a loss of either
+  $0$ or $1$ and says almost nothing about the group, so without such a correction one noisy point would
+  dictate the whole objective and let an unrepresentative group override the three groups with 65--69 members.
+  \end{solution}
   \item What $\lambda$ would you deploy on a real platform that cares equally about average and maximum group
         loss? Discuss the trade-offs with reference to the frameworks. \expect{3--5 sentences.}
-  \begin{solution}\todo{answer}\end{solution}
+  \begin{solution}
+  Caring equally about the two terms means $\lambda=0.5$. On our data this gives
+  $\TrainLossNew(D)=0.5\cdot0.1+0.5\cdot1.0=0.55$ and $\TrainLossNew(T)=0.5\cdot0.3+0.5\cdot0.3=0.30$, so T
+  would be deployed. The trade-off is utilitarian efficiency against Rawlsian protection of the worst-off:
+  T triples the average error (more toxic comments slip through and more ordinary commenters are flagged),
+  but D would flag \emph{every} comment in which someone states their identity (``I'm a woman in computer
+  science''), silencing exactly the groups that moderation is meant to protect and encoding the spurious
+  correlation as policy. A mixed $\lambda$ therefore accepts some loss of aggregate accuracy in exchange for
+  no group being systematically harmed, which is also the more defensible position for a platform that must
+  justify its decisions to all its users.
+  \end{solution}
 \end{enumerate}
 
 % ----------------------------------------------------------------------------
@@ -162,16 +291,57 @@ $\phi(x_1)=[0,0]$, $\phi(x_2)=[4,0]$, $\phi(x_3)=[6,0]$, $\phi(x_4)=[11,0]$.
 Give the assignments $z$, centres $\mu$ and final total loss.}
 \expect{For each initialisation: centres and assignments at every step, and the final loss.}
 \begin{solution}
-\todo{answer for both initialisations}
+All points lie on the $x$-axis, so we write only $x$-coordinates. Each step assigns every point to the
+nearest centre, then moves each centre to the mean of its points; the loss is
+$\sum_i\norm{\phi(x_i)-\mu_{z_i}}^2$.
+
+\textbf{(i) $\mu_1=0,\ \mu_2=11$.}
+\begin{itemize}[nosep]
+  \item Step 1, assign: $x_1{=}0\to\mu_1$ ($0<11$), $x_2{=}4\to\mu_1$ ($4<7$), $x_3{=}6\to\mu_2$ ($6>5$),
+        $x_4{=}11\to\mu_2$; $z=(1,1,2,2)$. Update: $\mu_1=\tfrac{0+4}{2}=2$, $\mu_2=\tfrac{6+11}{2}=8.5$.
+  \item Step 2, assign: $0\to\mu_1$ ($2<6.5$), $4\to\mu_1$ ($2<4.5$), $6\to\mu_2$ ($4>2.5$), $11\to\mu_2$;
+        $z=(1,1,2,2)$ unchanged $\Rightarrow$ converged.
+\end{itemize}
+Final: $z=(1,1,2,2)$, $\mu_1=[2,0]$, $\mu_2=[8.5,0]$,
+loss $=2^2+2^2+2.5^2+2.5^2=4+4+6.25+6.25=\mathbf{20.5}$.
+
+\textbf{(ii) $\mu_1=0,\ \mu_2=4$.}
+\begin{itemize}[nosep]
+  \item Step 1, assign: $0\to\mu_1$, $4\to\mu_2$ ($0<4$), $6\to\mu_2$ ($2<6$), $11\to\mu_2$; $z=(1,2,2,2)$.
+        Update: $\mu_1=0$, $\mu_2=\tfrac{4+6+11}{3}=7$.
+  \item Step 2, assign: $0\to\mu_1$, $4\to\mu_2$ ($3<4$), $6\to\mu_2$ ($1<6$), $11\to\mu_2$ ($4<11$);
+        $z=(1,2,2,2)$ unchanged $\Rightarrow$ converged.
+\end{itemize}
+Final: $z=(1,2,2,2)$, $\mu_1=[0,0]$, $\mu_2=[7,0]$, loss $=0+3^2+1^2+4^2=\mathbf{26}$.
+
+The two initialisations converge to different local optima; (i) is the better one, which illustrates why
+$k$-means is usually restarted from several random initialisations.
 \end{solution}
 
 \problempart{5b}{Implementing k-means}
 \codepart{2.5b}
+The implementation caches $\norm{\phi(x_i)}^2$ for every example and $\norm{\mu_j}^2$ for every centre once
+per epoch, so each distance $\norm{\phi(x_i)-\mu_j}^2=\norm{\phi(x_i)}^2-2\,\phi(x_i)\cdot\mu_j+\norm{\mu_j}^2$
+costs one sparse dot product; it stops as soon as the assignments stop changing.
 
 \problempart{5c}{Scaling invariance}
 \question{If every dimension of the data and the initial centroids is scaled by the same non-zero factor, are
 the same clusters guaranteed? What if only some dimensions are scaled?}
 \expect{For each sub-question: a short explanation if the answer is yes, or a concrete numerical counterexample if no.}
 \begin{solution}
-\todo{answer}
+\textbf{All dimensions scaled by the same $c\neq0$: yes.} Every squared distance is multiplied by the same
+constant $c^2$, $\norm{c\bvec x-c\bm\mu}^2=c^2\norm{\bvec x-\bm\mu}^2$, so the nearest centre of every point
+(the $\argmin$) is unchanged, and the new centres are the means of the same sets of points, hence exactly $c$
+times the old centres. By induction every iteration produces the same assignments as in the unscaled run, so
+the final clusters are identical (and the loss is simply $c^2$ times the original).
+
+\textbf{Only some dimensions scaled: no.} Take $K=2$ and the four points
+$A=(0,0)$, $B=(0,2)$, $C=(3,0)$, $D=(3,2)$ with initial centres $\mu_1=A$, $\mu_2=D$.
+Unscaled: $B$ is at distance $2$ from $A$ and $3$ from $D$, $C$ is at distance $3$ from $A$ and $2$ from $D$, so
+the clusters are $\{A,B\}$ and $\{C,D\}$ (centres $(0,1)$ and $(3,1)$, stable on the next pass).
+Now scale only the first coordinate by $\tfrac13$: $A'=(0,0)$, $B'=(0,2)$, $C'=(1,0)$, $D'=(1,2)$, with the
+scaled initial centres $\mu_1=A'$, $\mu_2=D'$. Now $B'$ is at distance $2$ from $A'$ but $1$ from $D'$, and $C'$
+is at distance $1$ from $A'$ but $2$ from $D'$, so the clusters become $\{A',C'\}$ and $\{B',D'\}$ (centres
+$(0.5,0)$ and $(0.5,2)$, stable). The same points end up in different clusters, so non-uniform scaling
+changes the result; this is why features are normalised before clustering.
 \end{solution}
