@@ -145,11 +145,11 @@ md(r"""
 | # | Full name | Student Number | Registration Number |
 |---|-----------|----------------|---------------------|
 | 1 | MUJUNI INNOCENT | 2400707155 | 24/U/07155/PS |
-| 2 | Roland Emma Watega | 2500702744 | 25/U/02744/PS |
-| 3 | Ran Binqi | 2500730559 | 25/X/30559/PS |
-| 4 | WERE Ezra Christian | 2500702746 | 25/U/02746/PS |
-| 5 | Kasajja Alvin Anthony | 2500729485 | 25/U/29485/PS |
-| 6 | Byarugaba John Keith | 2500703728 | 25/U/03728/PS |
+| 2 | ROLAND EMMA WATEGA | 2500702744 | 25/U/02744/PS |
+| 3 | RAN BINQI | 2500730559 | 25/X/30559/PS |
+| 4 | WERE EZRA CHRISTIAN | 2500702746 | 25/U/02746/PS |
+| 5 | KASAJJA ALVIN ANTHONY | 2500729485 | 25/U/29485/PS |
+| 6 | BYARUGABA JOHN KEITH | 2500703728 | 25/U/03728/PS |
 
 **Team:** Group 13
 
